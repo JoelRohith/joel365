@@ -9,152 +9,301 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-:root{--bg:#07101f;--bg2:#0d1b2e;--gold:#f5a623;--gold2:#e8950f;--green:#10b981;--red:#ef4444;--blue:#3b82f6;--violet:#8b5cf6;--amber:#f59e0b;--card:#0f1f35;--card2:#162840;--bdr:rgba(245,166,35,.15);--txt:#e8eaf0;--mut:#8a9ab5;--sw:265px}
+
+:root{
+  --bg:#06111e;--bg2:#0b1a2d;--bg3:#111f33;
+  --gold:#f5a623;--gold2:#d4880a;--gold3:#ffe08a;
+  --green:#12c78a;--green2:#0a9e6e;--green3:#d0f5e8;
+  --red:#f04040;--blue:#3d9be9;--violet:#9b6cf5;
+  --amber:#f5b942;--orange:#f57c35;
+  --card:#0c1e32;--card2:#132438;--card3:#1a2e42;
+  --bdr:rgba(245,166,35,.13);--bdr2:rgba(245,166,35,.25);
+  --txt:#dde6f0;--txt2:#a8bdd4;--mut:#6a85a0;
+  --sw:272px;--r:12px;
+  --shadow:0 8px 32px rgba(0,0,0,.45);
+}
 *{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);overflow-x:hidden;min-height:100vh}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--gold2);border-radius:3px}
+img{loading:lazy}
+
+/* PARTICLES */
 #ptcl{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .pt{position:absolute;border-radius:50%;opacity:0;animation:fup linear infinite}
-@keyframes fup{0%{transform:translateY(100vh);opacity:0}15%{opacity:.4}85%{opacity:.15}100%{transform:translateY(-5vh);opacity:0}}
-#sb{position:fixed;left:0;top:0;height:100vh;width:var(--sw);background:linear-gradient(180deg,#061525,#0b1e3a 60%,#061220);border-right:1px solid var(--bdr);z-index:200;display:flex;flex-direction:column;transition:transform .3s ease;overflow:hidden}
+@keyframes fup{0%{transform:translateY(110vh) scale(0);opacity:0}15%{opacity:.5}80%{opacity:.18}100%{transform:translateY(-6vh);opacity:0}}
+
+/* MUSIC PLAYER */
+#music-bar{position:fixed;bottom:0;left:var(--sw);right:0;height:46px;background:rgba(6,17,30,.97);border-top:1px solid var(--bdr);z-index:300;display:flex;align-items:center;padding:0 18px;gap:14px;transition:left .3s ease}
+#music-bar.full{left:0}
+.mbtn2{background:none;border:none;color:var(--gold);font-size:1rem;cursor:pointer;padding:4px 7px;border-radius:6px;transition:background .15s;flex-shrink:0}
+.mbtn2:hover{background:rgba(245,166,35,.12)}
+#vol-sl{-webkit-appearance:none;appearance:none;width:90px;height:3px;border-radius:2px;background:var(--bdr2);outline:none;cursor:pointer}
+#vol-sl::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--gold);cursor:pointer}
+#music-label{font-family:'Rajdhani',sans-serif;font-size:.75rem;color:var(--mut);flex:1}
+.note-anim{display:inline-block;animation:notebounce 1.2s ease infinite}
+@keyframes notebounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+/* SIDEBAR */
+#sb{position:fixed;left:0;top:0;height:100vh;width:var(--sw);background:linear-gradient(180deg,#050f1a 0%,#091726 50%,#040e18 100%);border-right:1px solid var(--bdr);z-index:200;display:flex;flex-direction:column;transition:transform .3s ease;overflow:hidden}
 #sb.hide{transform:translateX(calc(-1 * var(--sw)))}
-.sb-logo{padding:20px 18px 14px;border-bottom:1px solid var(--bdr);flex-shrink:0;cursor:pointer}
-.sb-logo h1{font-family:'Cinzel',serif;font-size:.93rem;color:var(--gold);letter-spacing:1.5px;line-height:1.4}
-.sb-logo p{font-size:.66rem;color:var(--mut);margin-top:3px;font-family:'Rajdhani'}
-.sb-nav{flex:1;overflow-y:auto;padding:6px 0}
-.sb-sec{padding:9px 16px 2px;font-size:.6rem;color:rgba(138,154,181,.4);font-family:'Rajdhani';letter-spacing:2.5px;text-transform:uppercase;margin-top:4px}
-.sb-a{display:flex;align-items:center;gap:10px;padding:9px 16px;color:var(--mut);font-family:'Rajdhani';font-size:.88rem;font-weight:600;transition:all .15s;border-left:3px solid transparent;cursor:pointer;white-space:nowrap;user-select:none}
+.sb-logo{padding:20px 17px 14px;border-bottom:1px solid var(--bdr);flex-shrink:0;cursor:pointer;position:relative;overflow:hidden}
+.sb-logo::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(245,166,35,.08),transparent 70%)}
+.sb-logo h1{font-family:'Cinzel',serif;font-size:.92rem;color:var(--gold);letter-spacing:1.5px;line-height:1.4;position:relative}
+.sb-logo p{font-size:.64rem;color:var(--mut);margin-top:3px;font-family:'Rajdhani',sans-serif;position:relative}
+.sb-nav{flex:1;overflow-y:auto;padding:5px 0}
+.sb-sec{padding:9px 15px 2px;font-size:.58rem;color:rgba(106,133,160,.5);font-family:'Rajdhani',sans-serif;letter-spacing:2.5px;text-transform:uppercase;margin-top:4px}
+.sb-a{display:flex;align-items:center;gap:10px;padding:8px 15px;color:var(--mut);font-family:'Rajdhani',sans-serif;font-size:.87rem;font-weight:600;transition:all .15s;border-left:3px solid transparent;cursor:pointer;white-space:nowrap;user-select:none}
 .sb-a:hover{color:var(--txt);background:rgba(245,166,35,.06)}
 .sb-a.act{color:var(--gold);background:rgba(245,166,35,.1);border-left-color:var(--gold)}
-.sb-a .ic{width:17px;text-align:center;font-size:.85rem;flex-shrink:0}
-.sb-foot{padding:12px 16px;border-top:1px solid var(--bdr);font-size:.68rem;color:var(--mut);flex-shrink:0}
-#tb{position:fixed;top:0;left:var(--sw);right:0;height:50px;background:rgba(7,16,31,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--bdr);z-index:199;display:flex;align-items:center;padding:0 18px;gap:12px;transition:left .3s ease}
+.sb-a .ic{width:17px;text-align:center;font-size:.84rem;flex-shrink:0}
+.sb-a .badge-count{margin-left:auto;background:var(--red);color:#fff;border-radius:10px;padding:0 6px;font-size:.62rem;font-weight:700}
+.sb-foot{padding:11px 15px;border-top:1px solid var(--bdr);font-size:.67rem;color:var(--mut);flex-shrink:0}
+#sb-score{color:var(--gold);font-family:'Rajdhani',sans-serif;font-size:.82rem;font-weight:700;display:block;margin-bottom:2px}
+
+/* TOPBAR */
+#tb{position:fixed;top:0;left:var(--sw);right:0;height:50px;background:rgba(6,17,30,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--bdr);z-index:199;display:flex;align-items:center;padding:0 17px;gap:11px;transition:left .3s ease}
 #tb.full{left:0}
-.mbtn{background:none;border:none;color:var(--gold);font-size:1.1rem;cursor:pointer;padding:5px 7px;border-radius:6px;transition:background .15s}
-.mbtn:hover{background:rgba(245,166,35,.12)}
-#tb-ttl{font-family:'Cinzel',serif;font-size:.9rem;color:#ffd580;font-weight:500;flex:1}
-.daybdg{background:linear-gradient(135deg,var(--gold2),var(--amber));color:#000;font-family:'Rajdhani';font-size:.78rem;font-weight:700;padding:3px 10px;border-radius:20px;flex-shrink:0}
-#main{margin-left:var(--sw);margin-top:50px;min-height:calc(100vh - 50px);transition:margin-left .3s ease;position:relative;z-index:1}
+.hbtn{background:none;border:none;color:var(--gold);font-size:1.05rem;cursor:pointer;padding:5px 7px;border-radius:6px;transition:background .15s;flex-shrink:0}
+.hbtn:hover{background:rgba(245,166,35,.12)}
+#tb-ttl{font-family:'Cinzel',serif;font-size:.9rem;color:var(--gold3);font-weight:500;flex:1}
+.daybdg{background:linear-gradient(135deg,var(--gold2),var(--amber));color:#000;font-family:'Rajdhani',sans-serif;font-size:.77rem;font-weight:700;padding:3px 9px;border-radius:20px;flex-shrink:0}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+/* MAIN */
+#main{margin-left:var(--sw);margin-top:50px;min-height:calc(100vh - 96px);padding-bottom:46px;transition:margin-left .3s ease;position:relative;z-index:1}
 #main.full{margin-left:0}
-.pg{animation:pin .3s ease}
-@keyframes pin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.hero{position:relative;overflow:hidden;display:flex;align-items:flex-end;min-height:200px}
-.hbg{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.2) saturate(1.3)}
-.hov{position:absolute;inset:0;background:linear-gradient(160deg,rgba(7,16,31,.94) 0%,rgba(15,31,53,.65) 60%,rgba(7,16,31,.9) 100%)}
-.hc{position:relative;z-index:2;padding:38px 32px 34px;width:100%}
-.hey{font-family:'Rajdhani';font-size:.76rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:8px}
-.hh{font-family:'Cinzel',serif;font-size:clamp(1.3rem,3.5vw,2.3rem);font-weight:900;color:#fff;line-height:1.2;margin-bottom:10px}
+.pg{animation:pin .32s ease}
+@keyframes pin{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* HERO */
+.hero{position:relative;overflow:hidden;display:flex;align-items:flex-end}
+.hbg{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.2) saturate(1.4);transition:filter 1s ease}
+.hov{position:absolute;inset:0;background:linear-gradient(160deg,rgba(6,17,30,.96) 0%,rgba(12,30,50,.68) 55%,rgba(6,17,30,.92) 100%)}
+.hc{position:relative;z-index:2;padding:36px 30px 30px;width:100%}
+.hey{font-family:'Rajdhani',sans-serif;font-size:.74rem;letter-spacing:3.5px;color:var(--gold);text-transform:uppercase;margin-bottom:8px}
+.hh{font-family:'Cinzel',serif;font-size:clamp(1.3rem,3.2vw,2.2rem);font-weight:900;color:#fff;line-height:1.2;margin-bottom:10px}
 .hh span{color:var(--gold)}
-.hsub{font-size:.83rem;color:var(--mut);max-width:440px;line-height:1.7;margin-bottom:20px}
-.hstats{display:flex;gap:22px;flex-wrap:wrap}
-.hsv{font-family:'Cinzel',serif;font-size:1.65rem;color:var(--gold);font-weight:700;line-height:1}
-.hsl{font-size:.65rem;color:var(--mut);font-family:'Rajdhani';text-transform:uppercase;letter-spacing:1px;margin-top:2px}
-.sh{padding:20px 26px 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.sh h2{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold)}
-.divg{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:6px 26px}
-.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:15px;padding:18px 26px}
-.card{background:var(--card);border:1px solid var(--bdr);border-radius:13px;overflow:hidden;cursor:pointer;transition:transform .28s,box-shadow .28s}
-.card:hover{transform:translateY(-5px);box-shadow:0 18px 50px rgba(245,166,35,.1)}
-.card img{width:100%;height:135px;object-fit:cover;display:block;filter:brightness(.78);transition:filter .3s}
-.card:hover img{filter:brightness(.9)}
-.cb{padding:13px 15px}
-.cico{font-size:1.2rem;margin-bottom:5px}
-.ct{font-family:'Cinzel',serif;font-size:.85rem;color:var(--gold);margin-bottom:3px}
-.cd{font-size:.73rem;color:var(--mut);line-height:1.5}
+.hsub{font-size:.82rem;color:var(--txt2);max-width:440px;line-height:1.75;margin-bottom:20px}
+.hstats{display:flex;gap:20px;flex-wrap:wrap}
+.hsv{font-family:'Cinzel',serif;font-size:1.6rem;color:var(--gold);font-weight:700;line-height:1}
+.hsl{font-size:.63rem;color:var(--mut);font-family:'Rajdhani',sans-serif;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+
+/* CARDS */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(218px,1fr));gap:14px;padding:18px 24px}
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:transform .28s,box-shadow .28s,border-color .28s}
+.card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:var(--bdr2)}
+.card img{width:100%;height:132px;object-fit:cover;display:block;filter:brightness(.78);transition:filter .3s,transform .3s}
+.card:hover img{filter:brightness(.9);transform:scale(1.04)}
+.card .cb{padding:12px 14px}
+.cico{font-size:1.15rem;margin-bottom:5px}
+.ct{font-family:'Cinzel',serif;font-size:.83rem;color:var(--gold);margin-bottom:3px}
+.cd{font-size:.72rem;color:var(--txt2);line-height:1.5}
 .pbar{margin-top:9px;height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
 .pfill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold2),var(--green))}
-.tcg{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:11px}
-.tci{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:8px 10px;cursor:pointer;transition:all .15s;user-select:none}
-.tci:hover{border-color:rgba(245,166,35,.3)}
-.tci.dn{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.28)}
+
+/* SECTION HEADER */
+.sh{padding:20px 24px 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sh h2{font-family:'Cinzel',serif;font-size:1.08rem;color:var(--gold)}
+.divg{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:6px 24px}
+
+/* BADGES */
+.bdg{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:.68rem;font-family:'Rajdhani',sans-serif;font-weight:700}
+.bg{background:rgba(245,166,35,.1);color:var(--gold);border:1px solid rgba(245,166,35,.25)}
+.bge{background:rgba(18,199,138,.1);color:var(--green);border:1px solid rgba(18,199,138,.25)}
+.bgr{background:rgba(240,64,64,.1);color:var(--red);border:1px solid rgba(240,64,64,.25)}
+.bgb{background:rgba(61,155,233,.1);color:var(--blue);border:1px solid rgba(61,155,233,.25)}
+.bgv{background:rgba(155,108,245,.1);color:var(--violet);border:1px solid rgba(155,108,245,.25)}
+.bga{background:rgba(245,185,66,.1);color:var(--amber);border:1px solid rgba(245,185,66,.25)}
+
+/* CHECKLIST - dashboard */
+.tcg{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:8px;margin-top:12px}
+.tci{display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--bdr);border-radius:9px;padding:9px 11px;cursor:pointer;transition:all .18s;user-select:none;position:relative;overflow:hidden}
+.tci::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--bdr)}
+.tci:hover{border-color:var(--bdr2);transform:translateX(2px)}
+.tci.dn{background:rgba(18,199,138,.07);border-color:rgba(18,199,138,.3)}
+.tci.dn::before{background:var(--green)}
 .tci.dn .tlbl{color:var(--green)}
-.twrap{padding:13px 26px;overflow-x:auto;-webkit-overflow-scrolling:touch}
-table{width:100%;border-collapse:collapse;font-size:.79rem}
-th{background:var(--card2);color:var(--gold);font-family:'Rajdhani';font-weight:700;padding:8px 10px;text-align:left;border-bottom:2px solid var(--bdr);white-space:nowrap;font-size:.73rem;position:sticky;top:0;z-index:1}
-td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--txt);vertical-align:middle}
+
+/* CHECKBOX */
+.cbw{text-align:center;padding:4px!important}
+.ck{width:24px;height:24px;border:2px solid rgba(255,255,255,.18);border-radius:7px;background:transparent;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .18s;font-size:.82rem;color:transparent;user-select:none;flex-shrink:0}
+.ck:hover{border-color:var(--green)}
+.ck.on{background:var(--green2);border-color:var(--green);color:#fff;animation:pop .22s ease}
+@keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.4)}100%{transform:scale(1)}}
+
+/* INPUT */
+.inp{background:var(--card2);border:1px solid var(--bdr);border-radius:7px;color:var(--txt);padding:5px 8px;font-family:'Nunito',sans-serif;font-size:.78rem;outline:none;transition:border-color .18s;width:100%}
+.inp:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(245,166,35,.12)}
+
+/* TABLE */
+.twrap{padding:12px 24px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+th{background:var(--card2);color:var(--gold);font-family:'Rajdhani',sans-serif;font-weight:700;padding:8px 10px;text-align:left;border-bottom:2px solid var(--bdr);white-space:nowrap;font-size:.74rem;position:sticky;top:0;z-index:1}
+td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--txt);vertical-align:middle;font-size:.79rem}
 tr:hover td{background:rgba(245,166,35,.02)}
 .otr td{border-left:3px solid var(--amber)}
 .ntr td{border-left:3px solid var(--blue)}
 .mtr td{border-left:3px solid var(--violet)}
-.cbw{text-align:center}
-.ck{width:22px;height:22px;border:2px solid rgba(255,255,255,.18);border-radius:6px;background:transparent;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;font-size:.78rem;color:transparent;user-select:none;flex-shrink:0}
-.ck:hover{border-color:var(--green)}
-.ck.on{background:var(--green);border-color:var(--green);color:#fff;animation:pop .2s ease}
-@keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.35)}100%{transform:scale(1)}}
-.inp{background:var(--card2);border:1px solid var(--bdr);border-radius:7px;color:var(--txt);padding:5px 8px;font-family:'Nunito';font-size:.77rem;outline:none;transition:border-color .15s}
-.inp:focus{border-color:var(--gold)}
-.pag{display:flex;align-items:center;justify-content:center;gap:6px;padding:15px;flex-wrap:wrap}
-.pgb{background:var(--card2);border:1px solid var(--bdr);color:var(--txt);padding:5px 10px;border-radius:7px;cursor:pointer;font-family:'Rajdhani';font-size:.78rem;font-weight:600;transition:all .15s}
+.today-row td{background:rgba(245,166,35,.04)!important;outline:1px solid rgba(245,166,35,.15)}
+
+/* PAGINATION */
+.pag{display:flex;align-items:center;justify-content:center;gap:6px;padding:14px;flex-wrap:wrap}
+.pgb{background:var(--card2);border:1px solid var(--bdr);color:var(--txt);padding:5px 10px;border-radius:7px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:.78rem;font-weight:600;transition:all .15s}
 .pgb:hover{background:var(--gold2);color:#000;border-color:var(--gold)}
 .pgb.cur{background:var(--gold);color:#000;border-color:var(--gold)}
 .pgb[disabled]{opacity:.3;cursor:not-allowed;pointer-events:none}
-.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:15px;padding:15px 26px}
-.mc{background:var(--card);border:1px solid var(--bdr);border-radius:13px;overflow:hidden;transition:transform .28s}
-.mc:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,0,0,.4)}
-.mc img{width:100%;height:160px;object-fit:cover;filter:brightness(.82)}
+
+/* MEAL / IMAGE CARDS */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;padding:14px 24px}
+.mc{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;transition:transform .28s,box-shadow .28s}
+.mc:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+.mc img{width:100%;height:165px;object-fit:cover;filter:brightness(.84);transition:filter .3s,transform .4s}
+.mc:hover img{filter:brightness(.95);transform:scale(1.03)}
 .mcb{padding:14px}
-.tl{padding:20px 26px;position:relative}
-.tl::before{content:'';position:absolute;left:44px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--gold),var(--green),var(--blue))}
-.tli{display:flex;gap:16px;margin-bottom:26px}
-.tlico{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.82rem;flex-shrink:0;z-index:1;margin-top:4px;border:2px solid currentColor}
-.tlb{flex:1;background:var(--card);border:1px solid var(--bdr);border-radius:11px;padding:15px;transition:transform .2s}
-.tlb:hover{transform:translateX(4px)}
-.phg{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:15px;padding:15px 26px}
-.phc{border-radius:13px;overflow:hidden;border:1px solid var(--bdr);transition:transform .28s}
-.phc:hover{transform:translateY(-4px)}
-.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(188px,1fr));gap:12px;padding:13px 26px}
-.fc{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:13px;transition:transform .2s}
-.fc:hover{transform:translateY(-3px)}
-.oilw{padding:11px 26px}
-.oils{display:flex;gap:12px;padding:12px;background:var(--card);border:1px solid var(--bdr);border-radius:10px;margin-bottom:9px;transition:transform .2s}
+
+/* TIMELINE */
+.tl{padding:18px 24px;position:relative}
+.tl::before{content:'';position:absolute;left:43px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--gold),var(--green),var(--blue))}
+.tli{display:flex;gap:15px;margin-bottom:24px}
+.tlico{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;z-index:1;margin-top:4px;border:2px solid currentColor}
+.tlb{flex:1;background:var(--card);border:1px solid var(--bdr);border-radius:11px;padding:15px;transition:transform .2s,box-shadow .2s}
+.tlb:hover{transform:translateX(4px);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+
+/* PHASE CARDS */
+.phg{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;padding:14px 24px}
+.phc{border-radius:var(--r);overflow:hidden;border:1px solid var(--bdr);transition:transform .28s,box-shadow .28s}
+.phc:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+
+/* FOOD / FEATURE GRID */
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:12px;padding:12px 24px}
+.fc{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;transition:transform .2s,box-shadow .2s}
+.fc:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.fc img{width:100%;height:110px;object-fit:cover;filter:brightness(.85)}
+.fc-body{padding:11px}
+
+/* HAIR GRID */
+.hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;padding:14px 24px}
+.hcard{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;transition:transform .28s,box-shadow .28s}
+.hcard:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+.hcard img{width:100%;height:155px;object-fit:cover;filter:brightness(.82);transition:filter .3s,transform .4s}
+.hcard:hover img{filter:brightness(.95);transform:scale(1.04)}
+.hcard-body{padding:13px}
+
+/* OIL STEPS */
+.oilw{padding:10px 24px}
+.oils{display:flex;gap:12px;padding:13px;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:10px;transition:transform .2s}
 .oils:hover{transform:translateX(4px)}
-.oiln{width:28px;height:28px;border-radius:50%;background:var(--gold2);color:#000;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-weight:700;font-size:.8rem;flex-shrink:0;margin-top:2px}
-.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:15px;padding:15px 26px}
-.qc{background:var(--card);border:1px solid var(--bdr);border-radius:13px;padding:22px;position:relative;overflow:hidden;transition:transform .28s}
-.qc:hover{transform:translateY(-4px)}
-.qc::before{content:'"';position:absolute;top:-16px;left:11px;font-size:7rem;color:rgba(245,166,35,.05);font-family:'Cinzel',serif;line-height:1;pointer-events:none}
-.hwk{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;padding:12px 26px}
-.hwd{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:10px 7px;text-align:center;transition:transform .2s}
+.oiln{width:30px;height:30px;border-radius:50%;background:var(--gold2);color:#000;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-weight:700;font-size:.82rem;flex-shrink:0;margin-top:2px}
+
+/* QUOTE CARDS */
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;padding:14px 24px}
+.qc{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;transition:transform .28s,box-shadow .28s;position:relative}
+.qc:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+.qc img{width:100%;height:140px;object-fit:cover;filter:brightness(.25) saturate(1.3)}
+.qc-body{padding:18px;position:relative}
+.qc-body::before{content:'"';position:absolute;top:-20px;left:12px;font-size:5rem;color:rgba(245,166,35,.12);font-family:'Cinzel',serif;line-height:1;pointer-events:none}
+
+/* HAIR WEEK */
+.hwk{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;padding:12px 24px}
+.hwd{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:10px 7px;text-align:center;transition:transform .2s}
 .hwd:hover{transform:translateY(-3px)}
 .hwd.sp{border-color:rgba(245,166,35,.4);background:rgba(245,166,35,.04)}
-.mcag{display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:15px;padding:15px 26px}
-.mcac{background:var(--card);border:1px solid var(--bdr);border-radius:13px;overflow:hidden;transition:transform .28s}
-.mcac:hover{transform:translateY(-4px)}
-.trc{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:13px;margin-bottom:10px;transition:transform .2s}
-.trc:hover{transform:translateX(4px)}
-.ib{margin:13px 26px;padding:12px 16px;background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.2);border-radius:10px}
-.chwrap{padding:16px 26px}
-.chbox{background:var(--card);border:1px solid var(--bdr);border-radius:13px;padding:17px}
-.bdg{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:.68rem;font-family:'Rajdhani';font-weight:700}
-.bg{background:rgba(245,166,35,.1);color:var(--gold);border:1px solid rgba(245,166,35,.25)}
-.bge{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.25)}
-.bgr{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.25)}
-.bgb{background:rgba(59,130,246,.1);color:var(--blue);border:1px solid rgba(59,130,246,.25)}
-.bgv{background:rgba(139,92,246,.1);color:var(--violet);border:1px solid rgba(139,92,246,.25)}
-.bga{background:rgba(245,158,11,.1);color:var(--amber);border:1px solid rgba(245,158,11,.25)}
-@media(max-width:768px){#sb{transform:translateX(calc(-1 * var(--sw)))}#sb.open{transform:translateX(0)!important}#main,#tb{margin-left:0!important;left:0!important}#tb{left:0}.hwk{grid-template-columns:repeat(3,1fr)}.hc{padding:26px 18px 22px}}
-@media(max-width:480px){.cgrid,.mgrid,.phg,.fgrid,.mcag{grid-template-columns:1fr}.tcg{grid-template-columns:1fr 1fr}}
+
+/* MCA GRID */
+.mcag{display:grid;grid-template-columns:repeat(auto-fill,minmax(262px,1fr));gap:14px;padding:14px 24px}
+.mcac{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;transition:transform .28s,box-shadow .28s}
+.mcac:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+.mcac img{width:100%;height:120px;object-fit:cover;filter:brightness(.7)}
+
+/* TRIGGER CARDS */
+.trc{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:14px;margin-bottom:11px;transition:transform .2s,box-shadow .2s}
+.trc:hover{transform:translateX(4px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
+
+/* INFO BANNERS */
+.ib{margin:12px 24px;padding:12px 16px;background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.2);border-radius:var(--r)}
+.ib-blue{background:rgba(61,155,233,.06);border-color:rgba(61,155,233,.2)}
+.ib-green{background:rgba(18,199,138,.06);border-color:rgba(18,199,138,.2)}
+.ib-red{background:rgba(240,64,64,.06);border-color:rgba(240,64,64,.2)}
+
+/* CHART */
+.chwrap{padding:16px 24px}
+.chbox{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:18px}
+
+/* WEIGHT STATS */
+.wstats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;padding:14px 24px}
+.wstat{background:var(--card2);border:1px solid var(--bdr);border-radius:var(--r);padding:12px 14px;text-align:center}
+.wstat-v{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;margin-bottom:2px}
+.wstat-l{font-size:.67rem;color:var(--mut);font-family:'Rajdhani',sans-serif;text-transform:uppercase;letter-spacing:.8px}
+
+/* WORKOUT EXERCISE CARDS */
+.exgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;padding:14px 24px}
+.excard{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;transition:transform .28s,box-shadow .28s;cursor:pointer}
+.excard:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+.excard img{width:100%;height:150px;object-fit:cover;filter:brightness(.8);transition:filter .3s,transform .5s}
+.excard:hover img{filter:brightness(1);transform:scale(1.06)}
+.excard-body{padding:13px}
+.ex-name{font-family:'Cinzel',serif;font-size:.88rem;color:var(--gold);margin-bottom:4px}
+.ex-desc{font-size:.74rem;color:var(--txt2);line-height:1.55}
+.ex-sets{display:inline-flex;align-items:center;gap:5px;margin-top:7px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.2);border-radius:20px;padding:2px 8px;font-size:.7rem;color:var(--gold);font-family:'Rajdhani',sans-serif;font-weight:700}
+
+/* SPIRITUAL / BIBLE specific */
+.spi-today{background:linear-gradient(135deg,rgba(245,166,35,.1),rgba(18,199,138,.08));border:1px solid rgba(245,166,35,.25);border-radius:var(--r);padding:18px 20px;margin:12px 24px}
+.verse-display{font-family:'Cinzel',serif;font-size:1rem;color:var(--gold3);line-height:1.7;margin:8px 0}
+
+/* WEEKLY REVIEW */
+.wkcard{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:15px;margin-bottom:12px;transition:border-color .2s}
+.wkcard:hover{border-color:var(--bdr2)}
+
+/* RESPONSIVE */
+@media(max-width:900px){:root{--sw:258px}}
+@media(max-width:768px){#sb{transform:translateX(calc(-1 * var(--sw)))}#sb.open{transform:translateX(0)!important}#main,#tb,#music-bar{margin-left:0!important;left:0!important}#tb{left:0}#music-bar{left:0}.hwk{grid-template-columns:repeat(3,1fr)}.hc{padding:24px 17px 20px}}
+@media(max-width:480px){.cgrid,.mgrid,.phg,.fgrid,.mcag,.exgrid,.hgrid{grid-template-columns:1fr}.tcg{grid-template-columns:1fr 1fr}}
+
 </style>
 </head>
 <body>
+
 <div id="ptcl"></div>
+
 <nav id="sb">
   <div class="sb-logo" onclick="goto('dashboard')">
     <h1>JOEL'S 365<br>MASTER SYSTEM</h1>
     <p>20-March-2026 &#x2192; 19-March-2027</p>
   </div>
   <div class="sb-nav" id="sbnav"></div>
-  <div class="sb-foot"><span id="sbday" style="color:var(--gold);font-family:'Rajdhani';font-size:.8rem;font-weight:700">Day 1 of 365</span><br>All data saved in your browser</div>
+  <div class="sb-foot">
+    <span id="sb-score">Day 1 of 365</span>
+    All data saved in your browser
+  </div>
 </nav>
+
 <header id="tb">
-  <button class="mbtn" onclick="toggleSB()"><i class="fas fa-bars" id="mico"></i></button>
+  <button class="hbtn" onclick="toggleSB()"><i class="fas fa-bars"></i></button>
   <span id="tb-ttl">Dashboard</span>
+  <div class="sync-dot" title="Data saved locally"></div>
   <span class="daybdg" id="tbday">Day 1</span>
 </header>
-<main id="main"><div style="color:var(--mut);padding:40px;font-family:'Rajdhani'">Loading...</div></main>
+
+<main id="main"><div style="padding:40px;color:var(--txt2);font-family:'Rajdhani'">Loading Joel's Master System...</div></main>
+
+<div id="music-bar">
+  <button class="mbtn2" id="music-play" onclick="toggleMusic()" title="Play/Pause">
+    <i class="fas fa-play"></i>
+  </button>
+  <button class="mbtn2" onclick="nextTrack()" title="Next Track">
+    <i class="fas fa-forward-step"></i>
+  </button>
+  <span id="music-label" style="font-family:'Rajdhani';font-size:.75rem;color:var(--mut)">&#9834; Ambient Meditation Music</span>
+  <i class="fas fa-volume-low" style="color:var(--mut);font-size:.78rem;flex-shrink:0"></i>
+  <input type="range" id="vol-sl" min="0" max="100" value="50" oninput="setVolume(this.value)" title="Volume">
+  <span style="font-size:.7rem;color:var(--mut);font-family:'Rajdhani';flex-shrink:0">Vol</span>
+</div>
 
 <script>
-// ── Data generation (all done in JS — no JSON parse issues) ────────────────
+
+// ── Bible books & plan generation ────────────────────────────────────────────
 var BOOKS=[['Genesis',50],['Exodus',40],['Leviticus',27],['Numbers',36],['Deuteronomy',34],
 ['Joshua',24],['Judges',21],['Ruth',4],['1 Samuel',31],['2 Samuel',24],
 ['1 Kings',22],['2 Kings',25],['1 Chronicles',29],['2 Chronicles',36],
@@ -170,94 +319,58 @@ var BOOKS=[['Genesis',50],['Exodus',40],['Leviticus',27],['Numbers',36],['Deuter
 ['2 Thessalonians',3],['1 Timothy',6],['2 Timothy',4],['Titus',3],
 ['Philemon',1],['Hebrews',13],['James',5],['1 Peter',5],['2 Peter',3],
 ['1 John',5],['2 John',1],['3 John',1],['Jude',1],['Revelation',22]];
-
-var OT_COUNT=39;
-var OT_NAMES={};
-for(var _i=0;_i<OT_COUNT;_i++) OT_NAMES[BOOKS[_i][0]]=1;
-
-// Build flat chapters list
-var ALL_CH=[];
-for(var bi=0;bi<BOOKS.length;bi++){
-  for(var ci=1;ci<=BOOKS[bi][1];ci++) ALL_CH.push([BOOKS[bi][0],ci]);
-}
-
-// Build 365-day plan
+var OT_N={};for(var _i=0;_i<39;_i++) OT_N[BOOKS[_i][0]]=1;
+var ALL_CH=[];for(var bi=0;bi<BOOKS.length;bi++) for(var ci=1;ci<=BOOKS[bi][1];ci++) ALL_CH.push([BOOKS[bi][0],ci]);
 var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
-var DAYS_IN_MONTH=[31,28,31,30,31,30,31,31,30,31,30,31];
+var START=new Date(2026,2,20);
+function addD(n){var d=new Date(START);d.setDate(d.getDate()+n);return d;}
+function fmtD(d){var day=d.getDate();return (day<10?'0':'')+day+'-'+MONTHS[d.getMonth()]+'-'+d.getFullYear();}
+function chLbl(chs){var g=[],cb=chs[0][0],s=chs[0][1],e=chs[0][1];for(var i=1;i<chs.length;i++){if(chs[i][0]===cb&&chs[i][1]===e+1){e=chs[i][1];}else{g.push([cb,s,e]);cb=chs[i][0];s=e=chs[i][1];}}g.push([cb,s,e]);return g.map(function(x){return x[1]===x[2]?x[0]+' '+x[1]:x[0]+' '+x[1]+'-'+x[2];}).join(' | ');}
+var BIBLE_PLAN=[],ALL_DATES=[],_base=Math.floor(1189/365),_extra=1189%365,_idx=0;
+for(var _d=0;_d<365;_d++){var _cnt=_base+(_d<_extra?1:0);var _chs=ALL_CH.slice(_idx,_idx+_cnt);_idx+=_cnt;ALL_DATES.push(fmtD(addD(_d)));var _bks=[],_bkseen={};for(var _ci=0;_ci<_chs.length;_ci++){if(!_bkseen[_chs[_ci][0]]){_bks.push(_chs[_ci][0]);_bkseen[_chs[_ci][0]]=1;}}var _iot=OT_N[_chs[0][0]]?1:0;var _hnt=0;for(var _ci=0;_ci<_chs.length;_ci++){if(!OT_N[_chs[_ci][0]]){_hnt=1;break;}}BIBLE_PLAN.push({day:_d+1,date:ALL_DATES[_d],reading:chLbl(_chs),testament:_iot&&_hnt?'OT+NT':_iot?'OT':'NT',books:_bks});}
+function wtgt(d){if(d<90)return Math.round((86-(20/90)*d)*10)/10;if(d<180)return Math.round((66-(6/90)*(d-90))*10)/10;return 60.0;}
 
-function addDays(year,month,day,n){
-  // month is 0-indexed
-  var d=new Date(year,month,day);
-  d.setDate(d.getDate()+n);
-  return d;
-}
-
-function fmtDate(d){
-  var day=d.getDate();
-  var m=MONTHS[d.getMonth()];
-  var y=d.getFullYear();
-  return (day<10?'0':'')+day+'-'+m+'-'+y;
-}
-
-var START=new Date(2026,2,20); // March 20 2026
-
-function chLabel(chs){
-  if(!chs||!chs.length) return '';
-  var g=[],cb=chs[0][0],s=chs[0][1],e=chs[0][1];
-  for(var i=1;i<chs.length;i++){
-    if(chs[i][0]===cb&&chs[i][1]===e+1){e=chs[i][1];}
-    else{g.push([cb,s,e]);cb=chs[i][0];s=e=chs[i][1];}
-  }
-  g.push([cb,s,e]);
-  return g.map(function(x){return x[1]===x[2]?x[0]+' '+x[1]:x[0]+' '+x[1]+'-'+x[2];}).join(' | ');
-}
-
-var BIBLE_PLAN=[];
-var ALL_DATES=[];
-var base=Math.floor(1189/365), extra=1189%365, idx=0;
-for(var day=0;day<365;day++){
-  var cnt=base+(day<extra?1:0);
-  var chs=ALL_CH.slice(idx,idx+cnt); idx+=cnt;
-  var dt=addDays(2026,2,20,day);
-  ALL_DATES.push(fmtDate(dt));
-  var books=[]; var bk_seen={};
-  for(var ci=0;ci<chs.length;ci++){if(!bk_seen[chs[ci][0]]){books.push(chs[ci][0]);bk_seen[chs[ci][0]]=1;}}
-  var is_ot=OT_NAMES[chs[0][0]]?1:0;
-  var has_nt=0; for(var ci=0;ci<chs.length;ci++){if(!OT_NAMES[chs[ci][0]]){has_nt=1;break;}}
-  var test=is_ot&&has_nt?'OT+NT':is_ot?'OT':'NT';
-  BIBLE_PLAN.push({day:day+1,date:fmtDate(dt),reading:chLabel(chs),testament:test,books:books});
-}
-
-function wtgt(d){
-  if(d<90) return Math.round((86-(20/90)*d)*10)/10;
-  if(d<180) return Math.round((66-(6/90)*(d-90))*10)/10;
-  return 60.0;
-}
-
-// ── Storage ────────────────────────────────────────────────────────────────
-function lsGet(k){try{var v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return null;}}
-function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
-var DATA=lsGet('joel_v5')||{daily:{},bible:{},weight:{},weekly:{}};
-function save(){lsSet('joel_v5',DATA);}
-
-// ── Helpers ────────────────────────────────────────────────────────────────
+// ── Storage helpers ───────────────────────────────────────────────────────────
 function el(id){return document.getElementById(id);}
 function qsa(s){return Array.prototype.slice.call(document.querySelectorAll(s));}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function getDN(){var ms=new Date()-START;var d=Math.floor(ms/86400000)+1;return Math.max(1,Math.min(365,d));}
 function today(){return ALL_DATES[Math.min(getDN()-1,364)];}
-function hst(v,l){return '<div><div class="hsv">'+v+'</div><div class="hsl">'+l+'</div></div>';}
-function hero(ey,ti,sub,img,stats,mh){
-  return '<div class="hero" style="min-height:'+(mh||'190px')+'">'
-    +'<div class="hbg" style="background-image:url(\''+img+'\')"></div>'
-    +'<div class="hov"></div><div class="hc">'
-    +'<div class="hey">'+ey+'</div><div class="hh">'+ti+'</div>'
-    +(sub?'<div class="hsub">'+sub+'</div>':'')
-    +(stats?'<div class="hstats">'+stats+'</div>':'')
-    +'</div></div>';
+function lsGet(k){try{var v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+var DATA=lsGet('joel_v6')||{daily:{},bible:{},weight:{},weekly:{},hair:{}};
+function save(){lsSet('joel_v6',DATA);updateSidebarScore();}
+
+// ── Tasks ─────────────────────────────────────────────────────────────────────
+var TASKS=[
+  {k:'wake',l:'Wake 6 AM',i:'fa-sun',c:'var(--gold)',pts:1},
+  {k:'workout',l:'Morning Walk 60min',i:'fa-person-walking',c:'var(--green)',pts:2},
+  {k:'exercises',l:'Home Workout 45min',i:'fa-dumbbell',c:'var(--orange)',pts:2},
+  {k:'diet',l:'Diet Plan Followed',i:'fa-apple-whole',c:'var(--amber)',pts:1},
+  {k:'nosugar',l:'Zero Sugar Today',i:'fa-ban',c:'var(--red)',pts:2},
+  {k:'water',l:'3 Liters Water',i:'fa-droplet',c:'var(--blue)',pts:1},
+  {k:'tea',l:'Max 1 Tea/Coffee',i:'fa-mug-hot',c:'var(--txt2)',pts:1},
+  {k:'hm',l:'Healthy Mind',i:'fa-brain',c:'var(--violet)',pts:2},
+  {k:'career',l:'Career Study 1hr',i:'fa-laptop-code',c:'var(--blue)',pts:2},
+  {k:'mca',l:'MCA Study 30min',i:'fa-graduation-cap',c:'var(--violet)',pts:1},
+  {k:'bible',l:'Bible Reading',i:'fa-book-open',c:'var(--gold)',pts:2},
+  {k:'prayer',l:'Morning Prayer',i:'fa-hands-praying',c:'var(--gold3)',pts:1},
+  {k:'sleep',l:'Sleep by 10:30 PM',i:'fa-moon',c:'var(--mut)',pts:1},
+  {k:'weight',l:'Weigh-in Done',i:'fa-weight-scale',c:'var(--green)',pts:1},
+  {k:'hair',l:'Hair Care Done',i:'fa-hand-sparkles',c:'var(--amber)',pts:1}
+];
+var MAX_PTS=TASKS.reduce(function(s,t){return s+t.pts;},0);
+function tscore(date){var d=DATA.daily[date]||{};return TASKS.reduce(function(s,t){return s+(d[t.k]?t.pts:0);},0);}
+function tpct(date){return Math.round(tscore(date)/MAX_PTS*100);}
+function tchecked(date){var d=DATA.daily[date]||{};return TASKS.filter(function(t){return d[t.k];}).length;}
+
+function updateSidebarScore(){
+  var td=today(),sc=tscore(td),pct=tpct(td),s=el('sb-score');
+  if(s) s.textContent='Day '+getDN()+' of 365 · '+pct+'% today';
+  var td2=el('tbday'); if(td2) td2.textContent='Day '+getDN();
 }
 
-// ── NAV ────────────────────────────────────────────────────────────────────
+// ── NAV ───────────────────────────────────────────────────────────────────
 var NAV=[
   {sec:'Overview'},
   {id:'dashboard',ico:'fa-house',lbl:'Dashboard'},
@@ -279,36 +392,29 @@ var NAV=[
 ];
 var PT={dashboard:'Dashboard',daily:'Daily Tracker',career:'Career Roadmap',diet:'Diet Plan',workout:'Workout Plan',weight:'Weight Tracker',mca:'MCA Study Plan',bible:'Bible Reading Plan',hm:'Healthy Mind',hair:'Hair Restoration',weekly:'Weekly Review',spiritual:'Spiritual Tracker',motivation:'Motivation Board'};
 
+// ── SIDEBAR ────────────────────────────────────────────────────────────────
 var sbOpen=true;
 function toggleSB(){
-  var sb=el('sb'),mn=el('main'),tb=el('tb');
+  var sb=el('sb'),mn=el('main'),tb=el('tb'),mb=el('music-bar');
   if(window.innerWidth<=768){sb.classList.toggle('open');}
-  else{sbOpen=!sbOpen;sb.classList.toggle('hide',!sbOpen);mn.classList.toggle('full',!sbOpen);tb.classList.toggle('full',!sbOpen);}
+  else{sbOpen=!sbOpen;sb.classList.toggle('hide',!sbOpen);mn.classList.toggle('full',!sbOpen);tb.classList.toggle('full',!sbOpen);if(mb)mb.classList.toggle('full',!sbOpen);}
 }
-
 function buildNav(act){
-  var h='',dn=getDN();
-  for(var i=0;i<NAV.length;i++){
-    var n=NAV[i];
-    if(n.sec){h+='<div class="sb-sec">'+n.sec+'</div>';}
-    else{h+='<div class="sb-a'+(act===n.id?' act':'')+'" onclick="goto(\''+n.id+'\')">'+'<span class="ic"><i class="fas '+n.ico+'"></i></span>'+n.lbl+'</div>';}
-  }
+  var h=''; for(var i=0;i<NAV.length;i++){var n=NAV[i];if(n.sec){h+='<div class="sb-sec">'+n.sec+'</div>';}else{h+='<div class="sb-a'+(act===n.id?' act':'')+'" onclick="goto(\''+n.id+'\')">'+'<span class="ic"><i class="fas '+n.ico+'"></i></span>'+n.lbl+'</div>';}}
   var sbn=el('sbnav'); if(sbn) sbn.innerHTML=h;
-  var sd=el('sbday'); if(sd) sd.textContent='Day '+dn+' of 365';
-  var td=el('tbday'); if(td) td.textContent='Day '+dn;
+  updateSidebarScore();
 }
 
+// ── ROUTER ─────────────────────────────────────────────────────────────────
 var CUR='';
 function goto(page){
   CUR=page;
   var ttl=el('tb-ttl'); if(ttl) ttl.textContent=PT[page]||page;
   buildNav(page);
   if(window.innerWidth<=768){var sb=el('sb');if(sb)sb.classList.remove('open');}
-  var main=el('main');
-  if(!main) return;
+  var main=el('main'); if(!main) return;
   main.innerHTML='<div class="pg" id="pgcont"></div>';
-  var cont=el('pgcont');
-  if(!cont) return;
+  var cont=el('pgcont'); if(!cont) return;
   try{
     if(page==='dashboard') cont.innerHTML=pgDash();
     else if(page==='daily') cont.innerHTML=pgDaily();
@@ -323,11 +429,10 @@ function goto(page){
     else if(page==='weekly') cont.innerHTML=pgWeekly();
     else if(page==='spiritual') cont.innerHTML=pgSpiritual();
     else if(page==='motivation') cont.innerHTML=pgMotivation();
-  }catch(e){cont.innerHTML='<div style="padding:30px;color:var(--red);font-family:Rajdhani">JS Error: '+e.message+'<br><small>'+e.stack+'</small></div>';}
+  }catch(err){cont.innerHTML='<div style="padding:30px;color:var(--red);font-size:.85rem">Error: '+esc(err.message)+'</div>';}
   wire(page);
   window.scrollTo(0,0);
 }
-
 function wire(page){
   qsa('.gp').forEach(function(e){e.onclick=function(){goto(this.dataset.p);};});
   if(page==='daily') wireDly();
@@ -336,78 +441,76 @@ function wire(page){
   if(page==='weekly') wireWk();
 }
 
-// ── TASKS ──────────────────────────────────────────────────────────────────
-var TASKS=[
-  {k:'wake',l:'Wake 6 AM',i:'fa-sun',c:'var(--gold)'},
-  {k:'workout',l:'Walk 60 min',i:'fa-person-walking',c:'var(--green)'},
-  {k:'diet',l:'Diet Control',i:'fa-apple-whole',c:'var(--amber)'},
-  {k:'nosugar',l:'No Sugar',i:'fa-ban',c:'var(--red)'},
-  {k:'tea',l:'Max 1 Tea',i:'fa-mug-hot',c:'var(--blue)'},
-  {k:'hm',l:'Healthy Mind',i:'fa-brain',c:'var(--violet)'},
-  {k:'career',l:'Career 1hr',i:'fa-laptop-code',c:'var(--blue)'},
-  {k:'mca',l:'MCA 30min',i:'fa-graduation-cap',c:'var(--violet)'},
-  {k:'bible',l:'Bible Read',i:'fa-book-open',c:'var(--gold)'},
-  {k:'sleep',l:'Sleep 10:30',i:'fa-moon',c:'var(--mut)'},
-  {k:'water',l:'3L Water',i:'fa-droplet',c:'var(--blue)'}
-];
-function tscore(date){var d=DATA.daily[date]||{};return TASKS.filter(function(t){return d[t.k];}).length;}
+// ── HELPERS ────────────────────────────────────────────────────────────────
+function hst(v,l){return '<div><div class="hsv">'+v+'</div><div class="hsl">'+l+'</div></div>';}
+function hero(ey,ti,sub,img,stats,mh){
+  return '<div class="hero" style="min-height:'+(mh||'190px')+'">'
+    +'<div class="hbg" style="background-image:url(\''+img+'\')"></div>'
+    +'<div class="hov"></div><div class="hc">'
+    +'<div class="hey">'+ey+'</div><div class="hh">'+ti+'</div>'
+    +(sub?'<div class="hsub">'+sub+'</div>':'')
+    +(stats?'<div class="hstats">'+stats+'</div>':'')
+    +'</div></div>';
+}
 
-// ══════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════
 // DASHBOARD
-// ══════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════
 function pgDash(){
-  var dn=getDN(),td=today(),done=tscore(td),pct=Math.round(done/TASKS.length*100),d=DATA.daily[td]||{};
-  var stats=hst(dn,'Day')+hst(done+'/'+TASKS.length,'Today')+hst(pct+'%','Score')+hst('365','Total');
+  var dn=getDN(),td=today(),d=DATA.daily[td]||{};
+  var pts=tscore(td),pct=tpct(td),chk=tchecked(td);
+  var stats=hst(dn,'Day')+hst(pts+'/'+MAX_PTS,'Points')+hst(pct+'%','Score')+hst(chk+'/'+TASKS.length,'Tasks');
+  var pc=pct>=80?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
   var tc='';
   for(var i=0;i<TASKS.length;i++){
     var t=TASKS[i],on=!!d[t.k];
     tc+='<div class="tci'+(on?' dn':'')+'" onclick="tgl(\''+td+'\',\''+t.k+'\')">'
-      +'<i class="fas '+t.i+'" style="color:'+(on?'var(--green)':t.c)+';font-size:.82rem;flex-shrink:0"></i>'
-      +'<span class="tlbl" style="font-family:Rajdhani;font-weight:700;font-size:.76rem;flex:1">'+t.l+'</span>'
-      +(on?'<i class="fas fa-check-circle" style="color:var(--green);font-size:.72rem"></i>':'')
+      +'<i class="fas '+t.i+'" style="color:'+(on?'var(--green)':t.c)+';font-size:.85rem;flex-shrink:0"></i>'
+      +'<span class="tlbl" style="font-family:\'Rajdhani\';font-weight:700;font-size:.78rem;flex:1">'+t.l+'</span>'
+      +(on?'<i class="fas fa-check-circle" style="color:var(--green);font-size:.72rem;flex-shrink:0"></i>':'<span style="font-size:.64rem;color:var(--mut);font-family:\'Rajdhani\'">+'+t.pts+'pts</span>')
       +'</div>';
   }
-  var PLIST=[
-    {id:'daily',ico:'fa-calendar-check',t:'Daily Tracker',d:'365-day log',img:'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=500&q=75',p:Math.round(dn/365*100)},
-    {id:'career',ico:'fa-laptop-code',t:'Career Roadmap',d:'Manual &rarr; Automation QA',img:'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=500&q=75',p:20},
-    {id:'diet',ico:'fa-utensils',t:'Diet Plan',d:'Controlled Indian diet',img:'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=500&q=75',p:pct},
-    {id:'workout',ico:'fa-dumbbell',t:'Workout Plan',d:'86kg &rarr; 66kg in 90 days',img:'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=500&q=75',p:Math.round(Math.min(dn,90)/90*100)},
-    {id:'weight',ico:'fa-weight-scale',t:'Weight Tracker',d:'3-phase journey',img:'https://images.unsplash.com/photo-1534258936925-c58bed479fcb?w=500&q=75',p:30},
-    {id:'mca',ico:'fa-graduation-cap',t:'MCA Study Plan',d:'Sem 1 &bull; Exam June 2026',img:'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=500&q=75',p:15},
-    {id:'bible',ico:'fa-book-open',t:'Bible Reading',d:'1,189 chapters &bull; 365 days',img:'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=500&q=75',p:Math.round(dn/365*100)},
-    {id:'hair',ico:'fa-hand-sparkles',t:'Hair Restoration',d:'Natural oil &amp; food plan',img:'https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?w=500&q=75',p:10},
-    {id:'hm',ico:'fa-brain',t:'Healthy Mind',d:'Trigger-response system',img:'https://images.unsplash.com/photo-1545389336-cf090694435e?w=500&q=75',p:pct},
-    {id:'motivation',ico:'fa-fire',t:'Motivation Board',d:'Your WHY &amp; power quotes',img:'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=500&q=75',p:100},
-    {id:'weekly',ico:'fa-chart-bar',t:'Weekly Review',d:'52-week reflection',img:'https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=500&q=75',p:Math.round(dn/365*100)},
-    {id:'spiritual',ico:'fa-cross',t:'Spiritual Tracker',d:'Prayer &amp; reflection log',img:'https://images.unsplash.com/photo-1518021964703-4b2030f03085?w=500&q=75',p:pct}
+  var PAGES=[
+    {id:'daily',ico:'fa-calendar-check',t:'Daily Tracker',d:'365-day habit log',img:'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=500&q=80',p:Math.round(dn/365*100)},
+    {id:'workout',ico:'fa-dumbbell',t:'Workout Plan',d:'86kg→66kg in 90 days',img:'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=500&q=80',p:Math.round(Math.min(dn,90)/90*100)},
+    {id:'diet',ico:'fa-utensils',t:'Diet Plan',d:'South Indian controlled diet',img:'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=500&q=80',p:pct},
+    {id:'weight',ico:'fa-weight-scale',t:'Weight Tracker',d:'3-phase 26kg journey',img:'https://images.unsplash.com/photo-1534258936925-c58bed479fcb?w=500&q=80',p:30},
+    {id:'hair',ico:'fa-hand-sparkles',t:'Hair Restoration',d:'Natural Ayurvedic plan',img:'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&q=80',p:10},
+    {id:'hm',ico:'fa-brain',t:'Healthy Mind',d:'Discipline & focus system',img:'https://images.unsplash.com/photo-1545389336-cf090694435e?w=500&q=80',p:pct},
+    {id:'career',ico:'fa-laptop-code',t:'Career Roadmap',d:'Manual→Automation QA',img:'https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=500&q=80',p:20},
+    {id:'mca',ico:'fa-graduation-cap',t:'MCA Study Plan',d:'Sem 1 • Exam June 2026',img:'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=500&q=80',p:15},
+    {id:'bible',ico:'fa-book-open',t:'Bible Reading',d:'1,189 chapters • 365 days',img:'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=500&q=80',p:Math.round(dn/365*100)},
+    {id:'spiritual',ico:'fa-cross',t:'Spiritual Tracker',d:'Daily prayer & reflection',img:'https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=500&q=80',p:pct},
+    {id:'weekly',ico:'fa-chart-bar',t:'Weekly Review',d:'52-week progress log',img:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&q=80',p:Math.round(dn/365*100)},
+    {id:'motivation',ico:'fa-fire',t:'Motivation Board',d:'Your WHY & power quotes',img:'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=500&q=80',p:100}
   ];
   var cards='';
-  for(var i=0;i<PLIST.length;i++){
-    var pg=PLIST[i];
+  for(var i=0;i<PAGES.length;i++){
+    var pg=PAGES[i];
     cards+='<div class="card gp" data-p="'+pg.id+'">'
-      +'<img src="'+pg.img+'" alt="'+pg.t+'" loading="lazy">'
-      +'<div class="cb"><div class="cico"><i class="fas '+pg.ico+'" style="color:var(--gold)"></i></div>'
+      +'<img src="'+pg.img+'" alt="'+pg.t+'" loading="lazy"><div class="cb">'
+      +'<div class="cico"><i class="fas '+pg.ico+'" style="color:var(--gold)"></i></div>'
       +'<div class="ct">'+pg.t+'</div><div class="cd">'+pg.d+'</div>'
       +'<div class="pbar"><div class="pfill" style="width:'+pg.p+'%"></div></div>'
       +'<div style="font-size:.67rem;color:var(--mut);margin-top:3px;font-family:\'Rajdhani\'">'+pg.p+'% complete</div>'
       +'</div></div>';
   }
-  var pc=pct>=80?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
-  return hero('Day '+dn+' of 365','Joel&#x27;s <span>Master</span><br>Execution System',
-    'Every day is a brick. Every discipline is a wall. Build your castle.',
-    'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=1400&q=80',stats,'250px')
-  +'<div style="padding:16px 26px 0">'
-  +'<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px;margin-bottom:4px">'
-  +'<div><div style="font-family:Cinzel,serif;color:var(--gold);font-size:.92rem">Today&#x27;s Checklist</div>'
-  +'<div style="font-size:.7rem;color:var(--mut);margin-top:2px">'+td+'</div></div>'
+  var streakDays=0;
+  for(var si=getDayNum()-1;si>=0;si--){if(tpct(ALL_DATES[si])>=70){streakDays++;}else{break;}}
+  return hero('Day '+dn+' of 365 • Score '+pct+'%','Joel\'s <span>Master</span><br>Execution System',
+    'Every day is a brick. Every discipline is a wall. Your castle is rising.',
+    'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=1400&q=80',stats,'245px')
+  +'<div style="padding:16px 24px 0">'
+  +'<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px">'
+  +'<div><div style="font-family:\'Cinzel\',serif;color:var(--gold);font-size:.95rem">Today\'s Checklist — '+td+'</div>'
+  +'<div style="font-size:.72rem;color:var(--txt2);margin-top:1px">Earn '+MAX_PTS+' points for a perfect day &bull; Current streak: '+streakDays+' day'+(streakDays!==1?'s':'')+'</div></div>'
   +'<div style="display:flex;align-items:center;gap:7px">'
-  +'<div style="width:130px;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden">'
-  +'<div style="width:'+pct+'%;height:100%;background:'+pc+';border-radius:3px"></div></div>'
-  +'<span style="font-family:Rajdhani;font-weight:700;color:var(--gold);font-size:.8rem">'+pct+'%</span>'
-  +'</div></div>'
+  +'<div style="width:128px;height:7px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden">'
+  +'<div style="width:'+pct+'%;height:100%;background:'+pc+';border-radius:4px;transition:width .9s ease"></div></div>'
+  +'<span style="font-family:\'Rajdhani\';font-weight:700;color:'+pc+';font-size:.82rem">'+pct+'%</span></div></div>'
   +'<div class="tcg">'+tc+'</div></div>'
   +'<div class="divg" style="margin-top:18px"></div>'
-  +'<div style="padding:11px 26px 4px;font-family:Cinzel,serif;color:var(--gold);font-size:.88rem">All Sections</div>'
+  +'<div style="padding:11px 24px 4px;font-family:\'Cinzel\',serif;color:var(--gold);font-size:.9rem">All Sections</div>'
   +'<div class="cgrid">'+cards+'</div>';
 }
 
@@ -417,39 +520,48 @@ function tgl(date,key){
   save(); goto('dashboard');
 }
 
-// ══════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════
 // DAILY TRACKER
-// ══════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════
 var DW=0;
 function pgDaily(){
   var dn=getDN(),tw=Math.ceil(365/7),td=today();
   var ws=DW*7,wdates=ALL_DATES.slice(ws,ws+7);
-  var thCbs=''; for(var i=0;i<TASKS.length;i++) thCbs+='<th>'+TASKS[i].l.split(' ')[0]+'</th>';
+  var thCbs=''; for(var i=0;i<TASKS.length;i++) thCbs+='<th title="'+TASKS[i].l+' ('+TASKS[i].pts+'pt)">'+TASKS[i].l.split(' ')[0]+'<br><span style="font-size:.6rem;color:var(--mut)">+'+TASKS[i].pts+'</span></th>';
   var rows='';
   for(var i=0;i<wdates.length;i++){
     var date=wdates[i],d=DATA.daily[date]||{},isT=(date===td);
-    var sc=tscore(date),scC=sc>=8?'var(--green)':sc>=5?'var(--amber)':'var(--red)';
+    var pts=tscore(date),pct=tpct(date);
+    var col=pts>=MAX_PTS*0.8?'var(--green)':pts>=MAX_PTS*0.5?'var(--amber)':'var(--red)';
     var cbs='';
     for(var j=0;j<TASKS.length;j++){
-      var t=TASKS[j],on=!!d[t.k];
-      cbs+='<td class="cbw"><div class="ck'+(on?' on':'')+'" data-date="'+date+'" data-key="'+t.k+'">&#10003;</div></td>';
+      var t=TASKS[j],on=!!d[t.j||t.k];on=!!d[t.k];
+      cbs+='<td class="cbw"><div class="ck'+(on?' on':'')+'" data-date="'+date+'" data-key="'+t.k+'" title="'+t.l+'">&#10003;</div></td>';
     }
-    rows+='<tr style="'+(isT?'background:rgba(245,166,35,.05)':'')+'">'
-      +'<td style="font-family:Rajdhani;font-weight:700;white-space:nowrap;font-size:.76rem;color:'+(isT?'var(--gold)':'var(--txt)')+'">'+date+'</td>'
+    rows+='<tr class="'+(isT?'today-row':'')+'">'
+      +'<td style="font-family:\'Rajdhani\';font-weight:700;white-space:nowrap;font-size:.77rem;color:'+(isT?'var(--gold)':'var(--txt)')+'">'+date+'</td>'
       +cbs
-      +'<td><span style="font-family:Cinzel,serif;color:'+scC+';font-weight:700;font-size:.8rem">'+sc+'/'+TASKS.length+'</span></td>'
-      +'<td><input class="inp dnote" data-date="'+date+'" style="min-width:115px" placeholder="Note..." value="'+esc(d.note||'')+'"></td>'
+      +'<td style="min-width:80px"><div style="font-family:\'Cinzel\',serif;color:'+col+';font-weight:700;font-size:.8rem">'+pts+'/'+MAX_PTS+'</div>'
+      +'<div style="height:4px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;margin-top:3px"><div style="width:'+pct+'%;height:100%;background:'+col+'"></div></div></td>'
+      +'<td><input class="inp dnote" data-date="'+date+'" style="min-width:115px" placeholder="Notes..." value="'+esc(d.note||'')+'"></td>'
       +'</tr>';
   }
-  return hero('Track Every Day','Daily <span>Discipline</span> Tracker','',
-    'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=1200&q=80','','145px')
-  +'<div style="padding:13px 26px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">'
+  var weekPts=0;
+  for(var i=0;i<wdates.length;i++) weekPts+=tscore(wdates[i]);
+  var maxWeekPts=7*MAX_PTS,weekPct=Math.round(weekPts/maxWeekPts*100);
+  return hero('Track Every Day','Daily <span>Discipline</span> Tracker',
+    'Tap each checkbox to mark complete. Every point counts.',
+    'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=1200&q=80','','150px')
+  +'<div style="margin:12px 24px;padding:12px 16px;background:var(--card2);border:1px solid var(--bdr);border-radius:var(--r);display:flex;align-items:center;flex-wrap:wrap;gap:14px">'
+  +'<div><div style="font-family:\'Cinzel\',serif;color:var(--gold);font-size:.88rem">Week '+(DW+1)+' Score</div>'
+  +'<div style="font-size:.72rem;color:var(--txt2);margin-top:1px">'+weekPts+' of '+maxWeekPts+' points — '+weekPct+'% this week</div></div>'
+  +'<div style="flex:1;min-width:120px"><div style="height:6px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden"><div style="width:'+weekPct+'%;height:100%;background:linear-gradient(90deg,var(--gold2),var(--green));border-radius:3px"></div></div></div>'
+  +'<div style="display:flex;gap:7px;flex-wrap:wrap">'
   +'<button class="pgb" onclick="DW=0;goto(\'daily\')" '+(DW===0?'disabled':'')+'>&#171;</button>'
   +'<button class="pgb" onclick="DW=Math.max(0,DW-1);goto(\'daily\')" '+(DW===0?'disabled':'')+'>&#8249; Prev</button>'
-  +'<span style="font-family:Cinzel,serif;color:var(--gold);font-size:.82rem">Week '+(DW+1)+' of '+tw+'</span>'
   +'<button class="pgb" onclick="DW=Math.min('+(tw-1)+',DW+1);goto(\'daily\')" '+(DW>=tw-1?'disabled':'')+'>Next &#8250;</button>'
-  +'<button class="pgb" onclick="DW=Math.floor(('+(dn-1)+')/7);goto(\'daily\')" style="margin-left:auto;background:var(--gold2);color:#000;border-color:var(--gold)">&#128205; Today</button>'
-  +'</div>'
+  +'<button class="pgb" onclick="DW=Math.floor(('+(getDayNum()-1)+')/7);goto(\'daily\')" style="background:var(--gold2);color:#000;border-color:var(--gold)">Today</button>'
+  +'</div></div>'
   +'<div class="twrap"><table><thead><tr><th>Date</th>'+thCbs+'<th>Score</th><th>Notes</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
 
@@ -460,340 +572,557 @@ function wireDly(){
       if(!DATA.daily[date]) DATA.daily[date]={};
       DATA.daily[date][key]=!DATA.daily[date][key];
       save(); this.classList.toggle('on');
+      var row=this.closest('tr');
+      if(row){
+        var sc=tscore(date),pct=tpct(date);
+        var col=sc>=MAX_PTS*0.8?'var(--green)':sc>=MAX_PTS*0.5?'var(--amber)':'var(--red)';
+        var scel=row.querySelector('[style*="Cinzel"]');
+        if(scel){scel.textContent=sc+'/'+MAX_PTS;scel.style.color=col;}
+        var bar=row.querySelector('[style*="height:4px"] div');
+        if(bar){bar.style.width=pct+'%';bar.style.background=col;}
+      }
     };
   });
   qsa('.dnote').forEach(function(e){
-    e.onblur=function(){
-      if(!DATA.daily[this.dataset.date]) DATA.daily[this.dataset.date]={};
-      DATA.daily[this.dataset.date].note=this.value; save();
-    };
+    e.onblur=function(){if(!DATA.daily[this.dataset.date])DATA.daily[this.dataset.date]={};DATA.daily[this.dataset.date].note=this.value;save();};
   });
 }
 
-// ══════════════════════════════════════════════════════════════════════
-// CAREER ROADMAP
-// ══════════════════════════════════════════════════════════════════════
-function pgCareer(){
-  var ph=[
-    {c:'var(--blue)',i:'fa-shield-halved',ph:'Current Role',ti:'Mar&ndash;Jun 2026',
-     top:'Advanced test cases (BVA, EP, Decision Table) &bull; Jira bug reports mastery &bull; Test Plan &amp; Strategy writing &bull; API basics with Postman &bull; SQL for QA data validation &bull; Agile/Scrum ceremonies',
-     tools:['Jira','MySQL','Postman','Confluence'],out:'Expert manual testing &bull; SQL skills &bull; API testing ready'},
-    {c:'var(--gold)',i:'fa-java',ph:'Phase 1',ti:'Jul&ndash;Aug 2026',
-     top:'Java: OOP, classes, inheritance, polymorphism &bull; Collections, exception handling &bull; File I/O &bull; 50+ HackerRank exercises',
-     tools:['Java','IntelliJ IDEA','HackerRank'],out:'Strong Java coding foundation ready for automation'},
-    {c:'var(--green)',i:'fa-robot',ph:'Phase 2',ti:'Sep&ndash;Oct 2026',
-     top:'Selenium WebDriver &bull; Page Object Model (POM) &bull; TestNG: annotations, parallel execution &bull; Data-driven testing &bull; Cross-browser testing',
-     tools:['Selenium','TestNG','Maven'],out:'Complete UI automation suite &bull; GitHub portfolio live'},
-    {c:'var(--violet)',i:'fa-code-branch',ph:'Phase 3',ti:'Nov&ndash;Dec 2026',
-     top:'REST Assured API automation &bull; Hybrid framework &bull; BDD Cucumber + Gherkin &bull; Allure Reports &bull; Jenkins CI/CD pipeline',
-     tools:['REST Assured','Cucumber','Jenkins','Allure'],out:'Hybrid framework &bull; CI pipeline running'},
-    {c:'var(--red)',i:'fa-trophy',ph:'Phase 4',ti:'Jan&ndash;Feb 2027',
-     top:'Resume tailoring for Automation QA &bull; Mock technical interviews &bull; LinkedIn + Naukri update &bull; Salary negotiation prep',
-     tools:['LinkedIn','Naukri'],out:'&#x1F3C6; Job Switch Achieved! 40&ndash;60% salary hike'}
+// ══════════════════════════════════════════════════════════════════════════
+// WORKOUT PLAN — with exercise images
+// ══════════════════════════════════════════════════════════════════════════
+function pgWorkout(){
+  var exercises={
+    p1str:[
+      {n:'Squats',sets:'3 × 15 reps',img:'https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=400&q=80',d:'Stand feet shoulder-width apart. Lower until thighs parallel to floor. Keep back straight. Builds glutes, quads, calves.'},
+      {n:'Wall Push-Ups',sets:'3 × 10 reps',img:'https://images.unsplash.com/photo-1616803689943-5601631c7fec?w=400&q=80',d:'Hands on wall, shoulder-width. Bend elbows 45°, lower chest toward wall, push back. Builds chest, triceps, shoulders.'},
+      {n:'Standing Lunges',sets:'3 × 10 each leg',img:'https://images.unsplash.com/photo-1597452485669-2c7bb5fef90d?w=400&q=80',d:'Step forward, lower back knee toward floor. Front knee stays above ankle. Builds quad, glutes, balance.'},
+      {n:'Glute Bridges',sets:'3 × 15 reps',img:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80',d:'Lie on back, feet flat, push hips up until body forms a line. Hold 2 sec. Burns fat, strengthens glutes and lower back.'},
+      {n:'Plank Hold',sets:'3 × 20 seconds',img:'https://images.unsplash.com/photo-1566241142559-40e1dab266c6?w=400&q=80',d:'Forearms on floor, body straight line from head to heels. Core tight. Best single exercise for total core strength.'},
+      {n:'Calf Raises',sets:'3 × 20 reps',img:'https://images.unsplash.com/photo-1552196563-55cd4e45efb3?w=400&q=80',d:'Stand on edge, raise up on toes, lower slowly. Strengthens calves, improves balance and ankle stability.'},
+    ],
+    p1crd:[
+      {n:'Jumping Jacks',sets:'3 × 30 reps',img:'https://images.unsplash.com/photo-1601422407692-ec4eeec1d9b3?w=400&q=80',d:'Full body cardio — arms up as feet jump out, then back. Burns ~8 kcal/min. Great warm-up for fat burning.'},
+      {n:'High Knees',sets:'3 × 30 seconds',img:'https://images.unsplash.com/photo-1544033527-b192daee1f5b?w=400&q=80',d:'Run in place bringing knees to chest height. Engages core and hip flexors while raising heart rate rapidly.'},
+      {n:'Mountain Climbers',sets:'3 × 20 reps',img:'https://images.unsplash.com/photo-1616803689943-5601631c7fec?w=400&q=80',d:'Plank position, drive knees alternately to chest fast. Combines core, cardio and upper body — very effective fat burner.'},
+      {n:'Burpees (Modified)',sets:'3 × 8 reps',img:'https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?w=400&q=80',d:'Squat down, step back to plank, do push-up, step feet back, stand up. Highest calorie-burn exercise per minute.'},
+    ],
+    walk:{img:'https://images.unsplash.com/photo-1539568653793-49eded7ce82d?w=800&q=80',desc:'Your most important daily activity. 60 minutes of brisk walking burns 350-450 kcal, reduces cortisol (stress hormone which causes belly fat), boosts metabolism for 4 hours after, and improves sleep quality.'}
+  };
+  var mkCards=function(arr){var h='';for(var i=0;i<arr.length;i++){var e=arr[i];h+='<div class="excard"><img src="'+e.img+'" alt="'+e.n+'" loading="lazy"><div class="excard-body"><div class="ex-name">'+e.n+'</div><div class="ex-desc">'+e.d+'</div><div class="ex-sets"><i class="fas fa-redo" style="font-size:.6rem"></i> '+e.sets+'</div></div></div>';}return h;};
+  var phases=[
+    {n:'01',t:'Phase 1 · Day 1–30',s:'Build the Base',c:'#ef4444',bg:'rgba(239,68,68,.07)',img:'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=500&q=80',
+     str:'Squats 3×15 · Wall push-ups 3×10 · Lunges 3×10 each · Glute bridges 3×15 · Plank 3×20s · Calf raises 3×20',
+     crd:'Jumping jacks 3×30 · High knees 3×30s · Mountain climbers 3×20 · Spot jog 3×1min · Burpees 3×8',note:'~200 kcal/session · Sunday: 45-min slow walk · FOCUS: Build the habit — show up every day'},
+    {n:'02',t:'Phase 2 · Day 31–60',s:'Accelerate',c:'#f97316',bg:'rgba(249,115,22,.07)',img:'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=500&q=80',
+     str:'Full squats 4×20 · Push-ups 4×12 · Reverse lunges 4×12 · Superman 4×15 · Plank 4×40s · Side plank 3×20s',
+     crd:'Burpees 4×10 · Jump squats 4×15 · High knees 4×45s · Chair step-ups 4×15 · Bicycle crunches 4×20',note:'~250 kcal/session · Sunday: 60-min brisk walk · FOCUS: Push beyond comfort zone every session'},
+    {n:'03',t:'Phase 3 · Day 61–90',s:'Final Push',c:'#22c55e',bg:'rgba(34,197,94,.07)',img:'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=500&q=80',
+     str:'Jump squats 4×20 · Diamond push-ups 4×12 · Bulgarian split squats 4×12 · Plank variations 4×1min',
+     crd:'Burpees 5×12 · Tuck jumps 4×10 · Sprint in place 5×1min · Jumping lunges 4×12',note:'~300 kcal/session · Sunday: 75-min power walk · FOCUS: Finish STRONG — 20 KG gone!'},
   ];
-  var tl='';
-  for(var i=0;i<ph.length;i++){
-    var p=ph[i],tags='';
-    for(var j=0;j<p.tools.length;j++) tags+='<span style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:2px 7px;font-size:.67rem;color:var(--mut);font-family:\'Rajdhani\'">'+p.tools[j]+'</span> ';
-    tl+='<div class="tli">'
-      +'<div class="tlico" style="color:'+p.c+';background:rgba(100,100,200,.12);border-color:'+p.c+'"><i class="fas '+p.i+'"></i></div>'
-      +'<div class="tlb">'
-      +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">'
-      +'<span style="font-family:Cinzel,serif;color:'+p.c+';font-size:.9rem;font-weight:700">'+p.ph+'</span>'
-      +'<span class="bdg bg">'+p.ti+'</span></div>'
-      +'<div style="font-size:.78rem;color:var(--txt);line-height:1.68;margin-bottom:7px">'+p.top+'</div>'
-      +'<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px">'+tags+'</div>'
-      +'<div style="font-size:.76rem;color:var(--green)"><i class="fas fa-star" style="margin-right:4px"></i>'+p.out+'</div>'
-      +'</div></div>';
-  }
-  var mo=[['Jul 2026','Java OOP + basics, HackerRank 50 exercises','1.5 hrs/day'],
-    ['Aug 2026','Selenium setup, first script, browser interactions','1.5 hrs/day'],
-    ['Sep 2026','POM, TestNG, data-driven, cross-browser','2 hrs/day'],
-    ['Oct 2026','Framework polish, GitHub portfolio upload','2 hrs/day'],
-    ['Nov 2026','REST Assured, hybrid framework, Cucumber','2 hrs/day'],
-    ['Dec 2026','Jenkins CI, Allure reports, framework final','2 hrs/day'],
-    ['Jan 2027','Mock interviews, resume, LinkedIn, apply','2.5 hrs/day'],
-    ['Feb 2027','Interview rounds, offer negotiation, Job Switch &#x2705;','&mdash;']];
-  var mr='';
-  for(var i=0;i<mo.length;i++) mr+='<tr><td style="font-family:Cinzel,serif;color:var(--gold);white-space:nowrap">'+mo[i][0]+'</td><td style="font-size:.76rem">'+mo[i][1]+'</td><td><span class="bdg bgb">'+mo[i][2]+'</span></td></tr>';
-  return hero('Manual QA &rarr; Automation Engineer','Career <span>Roadmap</span>',
-    'Automation learning starts July 2026. Target job switch: February 2027.',
-    'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&q=80','','145px')
-  +'<div class="tl">'+tl+'</div>'
-  +'<div class="sh"><h2>Monthly Learning Plan</h2></div>'
-  +'<div class="twrap"><table><thead><tr><th>Month</th><th>Tasks</th><th>Daily Hours</th></tr></thead><tbody>'+mr+'</tbody></table></div>';
+  var pc=''; for(var i=0;i<phases.length;i++){var p=phases[i];pc+='<div class="phc" style="background:'+p.bg+'"><div style="padding:14px;background:'+p.c+'22;display:flex;gap:10px;align-items:flex-start"><img src="'+p.img+'" alt="" style="width:52px;height:52px;border-radius:8px;object-fit:cover" loading="lazy"><div><div style="font-family:\'Cinzel\',serif;font-size:.88rem;color:'+p.c+';font-weight:700">'+p.t+'</div><div style="font-size:.7rem;color:rgba(255,255,255,.6);font-family:\'Rajdhani\'">'+p.s+'</div></div></div><div style="padding:0 14px 14px"><div style="font-family:\'Rajdhani\';font-weight:700;color:'+p.c+';font-size:.7rem;text-transform:uppercase;letter-spacing:1px;margin:10px 0 3px">Mon/Wed/Fri — Strength</div><div style="font-size:.75rem;color:rgba(255,255,255,.82);line-height:1.65">'+p.str+'</div><div style="font-family:\'Rajdhani\';font-weight:700;color:'+p.c+';font-size:.7rem;text-transform:uppercase;letter-spacing:1px;margin:8px 0 3px">Tue/Thu/Sat — Cardio/HIIT</div><div style="font-size:.75rem;color:rgba(255,255,255,.82);line-height:1.65">'+p.crd+'</div><div style="font-size:.71rem;color:var(--gold);margin-top:8px;padding-top:7px;border-top:1px solid rgba(255,255,255,.07)">'+p.note+'</div></div></div>';}
+  var sched=[['5:30 AM','🌅 Wake Up','500ml warm lemon water immediately — start hydrated'],
+    ['5:45 AM','🍌 Pre-Workout','5 soaked almonds + 1 banana (or fasted walk for faster fat burn)'],
+    ['6:00–7:00 AM','🚶 Morning Walk 60 min','Brisk pace 6–7 km · ~380 kcal · 5min warm-up + 5min cool-down · Non-negotiable daily habit'],
+    ['7:00–7:45 AM','🏋 Home Workout 45 min','Phase-specific exercises below · ~250 kcal burn · Rest 60s between sets'],
+    ['7:45 AM','🍳 Post-Workout Meal','2 idly OR oats upma + 1 glass buttermilk — protein for muscle recovery'],
+    ['7:00 PM','🚶 Evening Walk (Optional)','30-min light walk · +180 kcal · great for digestion after dinner'],
+    ['7:30 PM','🍎 Dinner','Skip OR fruits only OR light soup — no heavy food'],
+    ['10:30 PM','😴 Sleep','Poor sleep = cortisol spike = fat storage — must sleep on time!']];
+  var sc=''; for(var i=0;i<sched.length;i++){var s=sched[i];sc+='<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)"><div style="min-width:86px;font-family:\'Rajdhani\';font-weight:700;color:var(--gold);font-size:.78rem;padding-top:1px">'+s[0]+'</div><div><div style="font-family:\'Rajdhani\';font-weight:700;color:var(--txt);font-size:.87rem">'+s[1]+'</div><div style="font-size:.75rem;color:var(--txt2);margin-top:1px">'+s[2]+'</div></div></div>';}
+  return hero('90-Day Home Workout','Lose <span>20 KG</span> in 90 Days',
+    '86 kg → 66 kg by 17-June-2026 · No gym needed · ~600 kcal/day combined',
+    'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1400&q=80',
+    hst('20 KG','Target')+hst('90','Days')+hst('600','Kcal/day')+hst('0','Gym needed'),'185px')
+  +'<div class="ib ib-green" style="margin:14px 24px"><div style="font-family:\'Cinzel\',serif;color:var(--green);font-size:.88rem;margin-bottom:4px">🚶 Morning Walk — Your #1 Daily Priority</div><div style="font-size:.82rem;color:var(--txt2);line-height:1.65">'+exercises.walk.desc+'</div></div>'
+  +'<div style="padding:0 24px"><div style="background:var(--card2);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden"><img src="'+exercises.walk.img+'" alt="Morning Walk" style="width:100%;height:200px;object-fit:cover;filter:brightness(.75)"><div style="padding:14px;display:flex;align-items:center;gap:14px"><i class="fas fa-person-walking" style="color:var(--green);font-size:2rem"></i><div><div style="font-family:\'Cinzel\',serif;color:var(--green);font-size:.95rem">60-Minute Brisk Walk — Every Single Day</div><div style="font-size:.78rem;color:var(--txt2);margin-top:3px">6:00 AM sharp · 6–7 km · Minimum 8,000 steps · This alone loses 3–4 KG per month</div></div></div></div></div>'
+  +'<div class="sh"><h2>Daily Schedule</h2></div><div style="padding:12px 24px">'+sc+'</div>'
+  +'<div class="sh"><h2>3-Phase Workout Plan</h2></div><div class="phg">'+pc+'</div>'
+  +'<div class="sh"><h2>📸 Strength Exercises — Phase 1 (Day 1–30)</h2></div>'
+  +'<div class="exgrid">'+mkCards(exercises.p1str)+'</div>'
+  +'<div class="sh"><h2>🔥 Cardio / HIIT Exercises — Phase 1</h2></div>'
+  +'<div class="exgrid">'+mkCards(exercises.p1crd)+'</div>';
 }
 
-// ══════════════════════════════════════════════════════════════════════
-// DIET PLAN
-// ══════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════
+// DIET PLAN — South Indian focus
+// ══════════════════════════════════════════════════════════════════════════
 function pgDiet(){
   var meals=[
-    {t:'5:45 AM',n:'Pre-Workout Fuel',img:'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=75',
-     i:'Warm lemon water (500ml)\nSoaked almonds (5-6)\n1 banana',cal:'250 kcal',c:'var(--gold)'},
-    {t:'7:30 AM',n:'Breakfast',img:'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=500&q=75',
-     i:'2 idly with sambar\nOR 2 wheat dosa (less oil)\nOR oats upma with vegetables',cal:'350 kcal',c:'var(--green)'},
-    {t:'10:30 AM',n:'Mid-Morning Snack',img:'https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=500&q=75',
-     i:'Seasonal fruits (1 bowl)\nOR cucumber/carrot sticks\n+ 1 glass water',cal:'150 kcal',c:'var(--amber)'},
-    {t:'1:00 PM',n:'Lunch (Main Meal)',img:'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&q=75',
-     i:'1 cup rice (small)\n2 vegetable curries + dal\nCurd / Raita + Salad\nSTOP at 80% full!',cal:'450 kcal',c:'var(--blue)'},
-    {t:'4:00 PM',n:'Evening Snack',img:'https://images.unsplash.com/photo-1567918985670-47b3e76c4ec3?w=500&q=75',
-     i:'Groundnuts / boiled chana\nOR seasonal fruits\n+ Green tea (no sugar)',cal:'200 kcal',c:'var(--violet)'},
-    {t:'7:00 PM',n:'Dinner (Light/Skip)',img:'https://images.unsplash.com/photo-1529564879024-c54e7c2dd0e5?w=500&q=75',
-     i:'BEST: Skip dinner\nOR fruits only (papaya/watermelon)\nOR soup + 1 chapati\n+ 2 glasses water',cal:'0-200 kcal',c:'var(--red)'}
+    {t:'5:45 AM',n:'Pre-Workout / Warm-Up',img:'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500&q=80',
+     i:'Warm water with lemon (500ml)\nSoaked almonds (5-6 pieces)\n1 ripe banana OR 2 dates',cal:'220 kcal',c:'var(--gold)',
+     why:'Hydrates body after 8hr fast · Banana provides instant energy for walk · Almonds give Biotin for hair too'},
+    {t:'7:30 AM',n:'Breakfast — Idly / Dosa',img:'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=500&q=80',
+     i:'2 soft idly with sambar (no coconut chutney)\nOR 2 wheat dosa with tomato chutney\nOR oats upma with vegetables\n1 glass warm water',cal:'320 kcal',c:'var(--green)',
+     why:'Complex carbs for sustained energy · Fermented foods boost gut health · Skip oily items'},
+    {t:'10:30 AM',n:'Mid-Morning — Fruits',img:'https://images.unsplash.com/photo-1519996409144-56c88c35b6b6?w=500&q=80',
+     i:'Seasonal fruits: papaya / watermelon / guava\nOR cucumber + carrot sticks with lemon\n+ 1 glass water',cal:'130 kcal',c:'var(--amber)',
+     why:'Natural fiber · Prevents blood sugar crash · Keeps metabolism active between meals'},
+    {t:'1:00 PM',n:'Lunch — Main Tamil Meal',img:'https://images.unsplash.com/photo-1596797038530-2c107229654b?w=500&q=80',
+     i:'1 cup rice (small katoree)\n2 vegetable curries (drumstick / brinjal / beans)\n1 cup sambar OR rasam\nCurd rice (small) OR plain curd\nFresh salad: tomato, cucumber, onion\nSTOP eating at 80% full — key rule!',cal:'480 kcal',c:'var(--blue)',
+     why:'Largest meal of the day · Sambar = high protein · Curd = probiotics · Never take extra rice'},
+    {t:'4:00 PM',n:'Evening — Light Snack',img:'https://images.unsplash.com/photo-1567918985670-47b3e76c4ec3?w=500&q=80',
+     i:'Groundnuts / peanuts (small handful)\nOR boiled sundal (chana / moong)\nOR murukku alternative: roasted chickpeas\n+ Green tea without sugar OR buttermilk (chaas)',cal:'180 kcal',c:'var(--violet)',
+     why:'Prevents overeating at dinner · Groundnuts = Biotin for hair · Buttermilk cools body heat'},
+    {t:'7:00 PM',n:'Dinner — Light / Skip',img:'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=500&q=80',
+     i:'BEST OPTION: Skip dinner (drink 2 glasses water)\nOR: Curd rice (1 small cup) — easiest on stomach\nOR: Vegetable soup + 1 chapati\nOR: Fruits only (papaya / watermelon)\nNO rice, NO heavy food after 7 PM',cal:'0–200 kcal',c:'var(--red)',
+     why:'Skipping dinner is the fastest fat loss tool · Dinner calories become fat 90% of the time · Heavy dinner = poor sleep too'},
   ];
   var mc='';
   for(var i=0;i<meals.length;i++){
     var m=meals[i];
-    mc+='<div class="mc"><img src="'+m.img+'" alt="'+m.n+'" loading="lazy">'
-      +'<div class="mcb"><div style="font-family:Rajdhani;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;font-weight:700;color:'+m.c+'">'+m.t+'</div>'
-      +'<div style="font-family:Cinzel,serif;font-size:.88rem;color:var(--txt);margin:3px 0 7px">'+m.n+'</div>'
-      +'<div style="font-size:.74rem;color:var(--mut);line-height:1.62;white-space:pre-line">'+m.i+'</div>'
-      +'<div style="display:inline-flex;align-items:center;gap:4px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);border-radius:20px;padding:2px 8px;font-size:.68rem;color:var(--gold);margin-top:7px;font-family:Rajdhani;font-weight:700">'
-      +'<i class="fas fa-fire-flame-curved"></i> '+m.cal+'</div></div></div>';
-  }
-  var av=[
-    {e:'&#x1F36C;',n:'Sugar &amp; Sweets',d:'White sugar, chocolates, biscuits, cakes, ice cream'},
-    {e:'&#x1F35F;',n:'Fried Foods',d:'Vada, bajji, samosa, chips, fried chicken'},
-    {e:'&#x1F35E;',n:'Refined Carbs',d:'White bread, maida items, instant noodles, pizza'},
-    {e:'&#x1F964;',n:'Sugary Drinks',d:'Soft drinks, packaged juices, energy drinks'},
-    {e:'&#x1F319;',n:'Late Night Food',d:'Any solid food after 8 PM'},
-    {e:'&#x2615;',n:'Excess Tea/Coffee',d:'More than 1 cup per day'}
-  ];
-  var avh='';
-  for(var i=0;i<av.length;i++){
-    avh+='<div class="fc" style="border-color:rgba(239,68,68,.2)">'
-      +'<div style="font-size:1.4rem;margin-bottom:5px">'+av[i].e+'</div>'
-      +'<div style="font-family:Rajdhani;font-weight:700;color:var(--red);margin-bottom:2px">'+av[i].n+'</div>'
-      +'<div style="font-size:.73rem;color:var(--mut);line-height:1.5">'+av[i].d+'</div></div>';
-  }
-  return hero('Controlled Indian Diet','Weight-Loss <span>Diet Plan</span>',
-    'Total ~1,200-1,400 kcal/day &bull; No sugar &bull; Skip or light dinner',
-    'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1200&q=80','','145px')
-  +'<div class="mgrid">'+mc+'</div>'
-  +'<div class="sh"><h2 style="color:var(--red)">&#x1F6AB; Foods to Avoid Completely</h2></div>'
-  +'<div class="fgrid">'+avh+'</div>';
-}
-
-// ══════════════════════════════════════════════════════════════════════
-// WORKOUT PLAN
-// ══════════════════════════════════════════════════════════════════════
-function pgWorkout(){
-  var sched=[
-    ['5:30 AM','Wake Up','500ml warm lemon water immediately'],
-    ['5:45 AM','Pre-Workout Fuel','5 almonds + 1 banana (or fasted walk)'],
-    ['6:00-7:00 AM','&#x1F6B6; Morning Walk 60 min','Brisk 6-7 km &bull; ~350-400 kcal &bull; 5min warm-up + 5min cool-down'],
-    ['7:00-7:45 AM','&#x1F3CB; Home Workout 45 min','Phase-specific workout below &bull; ~200-300 kcal burn'],
-    ['7:45 AM','Post-Workout Meal','2 idly OR oats + 1 glass buttermilk'],
-    ['7:00 PM','Evening Walk (Optional)','30-min light walk &bull; +150 kcal bonus burn'],
-    ['7:30 PM','Dinner','SKIP or fruits only (papaya / watermelon / apple)'],
-    ['10:30 PM','Sleep On Time','Poor sleep = fat storage hormones spike overnight']
-  ];
-  var sc='';
-  for(var i=0;i<sched.length;i++){
-    var s=sched[i];
-    sc+='<div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04)">'
-      +'<div style="min-width:84px;font-family:Rajdhani;font-weight:700;color:var(--gold);font-size:.77rem;padding-top:1px">'+s[0]+'</div>'
-      +'<div><div style="font-family:Rajdhani;font-weight:700;color:var(--txt);font-size:.84rem">'+s[1]+'</div>'
-      +'<div style="font-size:.74rem;color:var(--mut);margin-top:1px">'+s[2]+'</div></div></div>';
-  }
-  var ph=[
-    {n:'01',t:'Phase 1 &bull; Day 1-30',s:'Build the Base',c:'#ef4444',bg:'rgba(239,68,68,.07)',
-     img:'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=500&q=75',
-     str:'Squats 3x15 &bull; Wall push-ups 3x10 &bull; Lunges 3x10 each &bull; Glute bridges 3x15 &bull; Plank 3x20s &bull; Calf raises 3x20',
-     crd:'Jumping jacks 3x30 &bull; High knees 3x30s &bull; Mountain climbers 3x20 &bull; Spot jog 3x1min &bull; Burpees 3x8',
-     note:'~200 kcal/session &bull; Sunday: 45-min slow walk &bull; FOCUS: Build the habit first'},
-    {n:'02',t:'Phase 2 &bull; Day 31-60',s:'Accelerate',c:'#f97316',bg:'rgba(249,115,22,.07)',
-     img:'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=500&q=75',
-     str:'Full squats 4x20 &bull; Push-ups 4x12 &bull; Reverse lunges 4x12 &bull; Superman 4x15 &bull; Plank 4x40s &bull; Side plank 3x20s',
-     crd:'Burpees 4x10 &bull; Jump squats 4x15 &bull; High knees 4x45s &bull; Chair step-ups 4x15 &bull; Bicycle crunches 4x20',
-     note:'~250 kcal/session &bull; Sunday: 60-min brisk walk &bull; FOCUS: Push beyond comfort'},
-    {n:'03',t:'Phase 3 &bull; Day 61-90',s:'Final Push',c:'#22c55e',bg:'rgba(34,197,94,.07)',
-     img:'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=500&q=75',
-     str:'Jump squats 4x20 &bull; Diamond push-ups 4x12 &bull; Bulgarian split squats 4x12 &bull; Plank variations 4x1min',
-     crd:'Burpees 5x12 &bull; Tuck jumps 4x10 &bull; Sprint in place 5x1min &bull; Jumping lunges 4x12',
-     note:'~300 kcal/session &bull; Sunday: 75-min power walk &bull; FOCUS: Finish STRONG - 20 KG done!'}
-  ];
-  var pc='';
-  for(var i=0;i<ph.length;i++){
-    var p=ph[i];
-    pc+='<div class="phc" style="background:'+p.bg+'">'
-      +'<div style="padding:15px;background:'+p.c+'22;display:flex;gap:10px;align-items:flex-start">'
-      +'<img src="'+p.img+'" alt="" style="width:50px;height:50px;border-radius:8px;object-fit:cover" loading="lazy">'
-      +'<div><div style="font-family:Cinzel,serif;font-size:.87rem;color:'+p.c+';font-weight:700">'+p.t+'</div>'
-      +'<div style="font-size:.7rem;color:rgba(255,255,255,.6);margin-top:2px;font-family:\'Rajdhani\'">'+p.s+'</div></div></div>'
-      +'<div style="padding:0 15px 15px">'
-      +'<div style="font-family:Rajdhani;font-weight:700;color:'+p.c+';font-size:.7rem;text-transform:uppercase;letter-spacing:1px;margin:10px 0 3px">Mon/Wed/Fri &mdash; Strength</div>'
-      +'<div style="font-size:.74rem;color:rgba(255,255,255,.82);line-height:1.62">'+p.str+'</div>'
-      +'<div style="font-family:Rajdhani;font-weight:700;color:'+p.c+';font-size:.7rem;text-transform:uppercase;letter-spacing:1px;margin:8px 0 3px">Tue/Thu/Sat &mdash; Cardio/HIIT</div>'
-      +'<div style="font-size:.74rem;color:rgba(255,255,255,.82);line-height:1.62">'+p.crd+'</div>'
-      +'<div style="font-size:.71rem;color:var(--gold);margin-top:8px;padding-top:7px;border-top:1px solid rgba(255,255,255,.07)">'+p.note+'</div>'
+    mc+='<div class="mc"><div style="position:relative"><img src="'+m.img+'" alt="'+m.n+'" loading="lazy"><div style="position:absolute;top:10px;left:10px"><span style="background:rgba(0,0,0,.6);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:3px 10px;font-size:.7rem;font-family:\'Rajdhani\';font-weight:700;color:'+m.c+'">'+m.t+'</span></div><div style="position:absolute;bottom:10px;right:10px"><span style="background:rgba(0,0,0,.6);backdrop-filter:blur(8px);border:1px solid rgba(245,166,35,.3);border-radius:20px;padding:3px 9px;font-size:.7rem;font-family:\'Rajdhani\';font-weight:700;color:var(--gold)"><i class="fas fa-fire-flame-curved" style="margin-right:3px"></i>'+m.cal+'</span></div></div>'
+      +'<div class="mcb"><div style="font-family:\'Cinzel\',serif;font-size:.9rem;color:var(--txt);margin-bottom:8px">'+m.n+'</div>'
+      +'<div style="font-size:.76rem;color:var(--txt2);line-height:1.65;white-space:pre-line;margin-bottom:8px">'+m.i+'</div>'
+      +'<div style="font-size:.72rem;color:var(--green);background:rgba(18,199,138,.06);border:1px solid rgba(18,199,138,.15);border-radius:7px;padding:6px 9px;line-height:1.5"><i class="fas fa-circle-info" style="margin-right:5px"></i>'+m.why+'</div>'
       +'</div></div>';
   }
-  return hero('90-Day Home Workout','Lose <span>20 KG</span> in 90 Days',
-    '86 kg &rarr; 66 kg by 17-June-2026 &bull; No gym needed &bull; ~600 kcal/day combined burn',
-    'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1400&q=80','','165px')
-  +'<div class="sh"><h2>Daily Schedule</h2></div>'
-  +'<div style="padding:12px 26px">'+sc+'</div>'
-  +'<div class="sh"><h2>3-Phase Workout Plan</h2></div>'
-  +'<div class="phg">'+pc+'</div>';
+  var avoid=[
+    {e:'🍬',n:'Sugar & Sweets',d:'White sugar, halwa, chocolates, biscuits, cakes, murukku (fried)',img:'https://images.unsplash.com/photo-1543158266-0066955047b1?w=300&q=70'},
+    {e:'🍟',n:'Fried Foods',d:'Vada, bajji, samosa, chips, fried chicken, poori',img:'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=300&q=70'},
+    {e:'🥤',n:'Sugary Drinks',d:'Soft drinks, packaged juices, energy drinks, sweet tea',img:'https://images.unsplash.com/photo-1624517452488-04869289c4ca?w=300&q=70'},
+    {e:'🍞',n:'Maida / Refined',d:'White bread, parotta, pizza base, instant noodles',img:'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&q=70'},
+    {e:'🌙',n:'Late Night Food',d:'Any heavy food after 8 PM — becomes fat immediately',img:'https://images.unsplash.com/photo-1555244162-803834f70033?w=300&q=70'},
+    {e:'☕',n:'Excess Tea/Coffee',d:'More than 1 cup per day — cortisol, calcium loss, poor sleep',img:'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=300&q=70'},
+  ];
+  var av=''; for(var i=0;i<avoid.length;i++){var a=avoid[i];av+='<div class="fc"><img src="'+a.img+'" alt="'+a.n+'" loading="lazy"><div class="fc-body"><div style="font-family:\'Rajdhani\';font-weight:700;color:var(--red);margin-bottom:3px;font-size:.88rem">'+a.e+' '+a.n+'</div><div style="font-size:.74rem;color:var(--txt2);line-height:1.5">'+a.d+'</div></div></div>';}
+  return hero('Controlled South Indian Diet','Weight-Loss <span>Diet Plan</span>',
+    'Tamil Nadu-style healthy eating · ~1,200–1,400 kcal/day · No sugar · Light dinner',
+    'https://images.unsplash.com/photo-1596797038530-2c107229654b?w=1400&q=80','','155px')
+  +'<div class="ib"><div style="font-family:\'Cinzel\',serif;color:var(--gold);font-size:.88rem;margin-bottom:4px">📊 Daily Calorie Target</div><div style="font-size:.82rem;color:var(--txt2)">Target: <strong style="color:var(--gold)">1,200–1,400 kcal/day</strong> · Current estimate: ~2,200 kcal/day · Deficit needed: ~800 kcal/day from food + ~600 kcal from exercise = <strong style="color:var(--green)">-1.3 to 1.6 KG per week</strong></div></div>'
+  +'<div class="mgrid">'+mc+'</div>'
+  +'<div class="sh"><h2 style="color:var(--red)">🚫 Avoid These Completely</h2></div>'
+  +'<div class="fgrid">'+av+'</div>';
 }
 
-// ══════════════════════════════════════════════════════════════════════
-// WEIGHT TRACKER
-// ══════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════
+// WEIGHT TRACKER — with live calculations
+// ══════════════════════════════════════════════════════════════════════════
 var WP=0,WPER=30;
+function calcWeightStats(){
+  var entries=[];
+  for(var i=0;i<365;i++){var a=DATA.weight[ALL_DATES[i]];if(a&&parseFloat(a)>0)entries.push({day:i,w:parseFloat(a),date:ALL_DATES[i]});}
+  if(!entries.length) return {lost:0,avgPerWeek:0,eta:'Not started yet',daysLeft:0,bmi:'—',status:'Not started'};
+  var first=entries[0],last=entries[entries.length-1];
+  var lost=Math.round((86-last.w)*10)/10;
+  var days=last.day-first.day+1;
+  var avgPerWeek=days>0?Math.round((first.w-last.w)/days*7*10)/10:0;
+  var remaining=Math.max(0,last.w-60);
+  var daysLeft=avgPerWeek>0?Math.round(remaining/avgPerWeek*7):0;
+  var etaDate=new Date(2026,2,20+last.day+daysLeft);
+  var eta=etaDate.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  var bmi=Math.round(last.w/(1.7*1.7)*10)/10;
+  var status=bmi<18.5?'Underweight':bmi<25?'Healthy':bmi<30?'Overweight':'Obese';
+  return {lost:lost,avgPerWeek:avgPerWeek,eta:eta,daysLeft:daysLeft,bmi:bmi,status:status,current:last.w,target:60};
+}
+
 function pgWeight(){
-  var total=Math.ceil(365/WPER);
-  var rows=[];
-  for(var i=WP*WPER;i<Math.min((WP+1)*WPER,365);i++) rows.push(i);
-  var tr='';
-  for(var i=0;i<rows.length;i++){
-    var idx=rows[i],r={date:ALL_DATES[idx],day:idx+1,target:wtgt(idx),phase:idx<90?1:idx<180?2:3};
-    var actual=DATA.weight[r.date]||'';
-    var diff=actual!==''?Math.round((parseFloat(actual)-r.target)*10)/10:'';
-    var pb=r.phase===1?'bgr':r.phase===2?'bga':'bge';
+  var total=Math.ceil(365/WPER),stats=calcWeightStats();
+  var statColor=stats.status==='Healthy'?'var(--green)':stats.status==='Overweight'?'var(--amber)':'var(--red)';
+  var lc=stats.lost>0?'var(--green)':'var(--txt2)';
+  var rows='';
+  for(var i=WP*WPER;i<Math.min((WP+1)*WPER,365);i++){
+    var date=ALL_DATES[i],tgt=wtgt(i),actual=DATA.weight[date]||'',ph=i<90?1:i<180?2:3;
+    var diff=actual!==''?Math.round((parseFloat(actual)-tgt)*10)/10:'';
     var dc=diff>0?'var(--red)':diff<0?'var(--green)':'var(--mut)';
-    tr+='<tr><td style="font-family:Rajdhani;font-weight:600;white-space:nowrap;font-size:.76rem">'+r.date+'</td>'
-      +'<td style="color:var(--mut)">'+r.day+'</td>'
-      +'<td><span class="bdg '+pb+'">P'+r.phase+'</span></td>'
-      +'<td style="color:var(--blue)">'+r.target+'</td>'
-      +'<td><input class="inp winp" data-date="'+r.date+'" type="number" step="0.1" placeholder="&mdash;" style="width:70px;text-align:center" value="'+esc(actual)+'"></td>'
-      +'<td style="color:'+dc+'">'+( diff!==''?(diff>0?'+':'')+diff : '')+'</td></tr>';
+    var pb=ph===1?'bgr':ph===2?'bga':'bge';
+    rows+='<tr><td style="font-family:\'Rajdhani\';font-weight:600;white-space:nowrap;font-size:.77rem">'+date+'</td>'
+      +'<td style="color:var(--txt2)">'+( i+1)+'</td>'
+      +'<td><span class="bdg '+pb+'">P'+ph+'</span></td>'
+      +'<td style="color:var(--blue);font-weight:700">'+tgt+'</td>'
+      +'<td><input class="inp winp" data-idx="'+i+'" data-date="'+date+'" type="number" step="0.1" placeholder="— kg" style="width:75px;text-align:center" value="'+esc(actual)+'"></td>'
+      +'<td style="color:'+dc+';font-weight:700">'+(diff!==''?(diff>0?'↑ +':'↓ ')+Math.abs(diff)+' kg':'—')+'</td>'
+      +'<td style="font-size:.72rem;color:var(--txt2)">'+(actual!==''?'BMI: '+Math.round(parseFloat(actual)/(1.7*1.7)*10)/10:'—')+'</td>'
+      +'</tr>';
   }
   var pgBtns='';
   for(var i=0;i<total;i++) pgBtns+='<button class="pgb'+(i===WP?' cur':'')+'" onclick="WP='+i+';goto(\'weight\')">'+(i*WPER+1)+'-'+Math.min((i+1)*WPER,365)+'</button>';
-  return hero('3-Phase Journey','Weight <span>Tracker</span>',
-    'Phase 1: 86&rarr;66 kg (90d) &bull; Phase 2: 66&rarr;60 kg (90d) &bull; Phase 3: Maintain 60 kg',
-    'https://images.unsplash.com/photo-1534258936925-c58bed479fcb?w=1200&q=80','','145px')
-  +'<div class="chwrap"><div class="chbox">'
-  +'<div style="font-family:Cinzel,serif;color:var(--gold);margin-bottom:13px;font-size:.88rem">Weight Journey &mdash; Weekly Overview</div>'
-  +'<canvas id="wcht" height="75"></canvas></div></div>'
-  +'<div style="display:flex;gap:8px;padding:0 26px 11px;flex-wrap:wrap">'
-  +'<span class="bdg bgr">&#x1F534; Phase 1: 86&rarr;66 kg</span>'
-  +'<span class="bdg bga">&#x1F7E0; Phase 2: 66&rarr;60 kg</span>'
-  +'<span class="bdg bge">&#x1F7E2; Phase 3: Maintain 60 kg</span></div>'
-  +'<div class="twrap"><table><thead><tr><th>Date</th><th>Day</th><th>Phase</th><th>Target kg</th><th>Actual kg</th><th>Diff</th></tr></thead><tbody>'+tr+'</tbody></table></div>'
+  return hero('3-Phase Weight Journey','Weight <span>Tracker</span>',
+    'Phase 1: 86→66 kg (90 days) · Phase 2: 66→60 kg · Phase 3: Maintain 60 kg',
+    'https://images.unsplash.com/photo-1534258936925-c58bed479fcb?w=1200&q=80','','148px')
+  +'<div class="wstats">'
+  +'<div class="wstat"><div class="wstat-v" style="color:'+lc+'">'+stats.lost+' kg</div><div class="wstat-l">Total Lost</div></div>'
+  +'<div class="wstat"><div class="wstat-v" style="color:var(--gold)">'+stats.current+'</div><div class="wstat-l">Current kg</div></div>'
+  +'<div class="wstat"><div class="wstat-v" style="color:var(--green)">60</div><div class="wstat-l">Goal kg</div></div>'
+  +'<div class="wstat"><div class="wstat-v" style="color:var(--blue)">'+stats.avgPerWeek+' kg</div><div class="wstat-l">Avg/week</div></div>'
+  +'<div class="wstat"><div class="wstat-v" style="color:var(--amber)">'+stats.bmi+'</div><div class="wstat-l" style="color:'+statColor+'">BMI ('+stats.status+')</div></div>'
+  +'<div class="wstat"><div class="wstat-v" style="color:var(--violet)">'+stats.daysLeft+'</div><div class="wstat-l">Days to goal</div></div>'
+  +'</div>'
+  +'<div id="weight-eta" class="ib ib-green" style="margin:8px 24px"><div style="font-size:.84rem"><i class="fas fa-bullseye" style="color:var(--green);margin-right:6px"></i>At current pace, you will reach <strong>60 kg</strong> by approximately <strong style="color:var(--green)">'+stats.eta+'</strong> · Keep going! 💪</div></div>'
+  +'<div class="chwrap"><div class="chbox"><div style="font-family:\'Cinzel\',serif;color:var(--gold);margin-bottom:13px;font-size:.88rem">Weight Journey — Weekly Chart</div><canvas id="wcht" height="75"></canvas></div></div>'
+  +'<div style="display:flex;gap:8px;padding:0 24px 11px;flex-wrap:wrap"><span class="bdg bgr">🔴 Phase 1: 86→66 kg (90 days)</span><span class="bdg bga">🟠 Phase 2: 66→60 kg (90 days)</span><span class="bdg bge">🟢 Phase 3: Maintain 60 kg</span></div>'
+  +'<div class="twrap"><table><thead><tr><th>Date</th><th>Day</th><th>Phase</th><th>Target</th><th>Actual kg</th><th>vs Target</th><th>BMI</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
   +'<div class="pag"><button class="pgb" onclick="WP=Math.max(0,WP-1);goto(\'weight\')" '+(WP===0?'disabled':'')+'>&#8249; Prev</button>'+pgBtns+'<button class="pgb" onclick="WP=Math.min('+(total-1)+',WP+1);goto(\'weight\')" '+(WP>=total-1?'disabled':'')+'>Next &#8250;</button></div>';
 }
 
 function wireWt(){
   var ctx=el('wcht');
   if(ctx&&window.Chart){
-    var sample=[],sl=[];
-    for(var i=0;i<365;i+=7){sample.push({date:ALL_DATES[i],target:wtgt(i)});}
-    new Chart(ctx,{
-      type:'line',
-      data:{
-        labels:sample.map(function(d){return d.date.split('-').slice(0,2).join(' ');}),
-        datasets:[
-          {label:'Target',data:sample.map(function(d){return d.target;}),borderColor:'rgba(245,166,35,.45)',borderDash:[5,5],borderWidth:2,pointRadius:0,tension:.4},
-          {label:'Actual',data:sample.map(function(d){return DATA.weight[d.date]||d.target;}),borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.08)',borderWidth:2,pointRadius:2,tension:.4,fill:true}
-        ]
-      },
-      options:{responsive:true,plugins:{legend:{labels:{color:'#e8eaf0',font:{size:10}}}},
-        scales:{x:{ticks:{color:'#8a9ab5',maxTicksLimit:8},grid:{color:'rgba(255,255,255,.04)'}},
-                y:{ticks:{color:'#8a9ab5'},grid:{color:'rgba(255,255,255,.04)'}}}}
-    });
+    var sample=[]; for(var i=0;i<365;i+=7) sample.push({date:ALL_DATES[i],target:wtgt(i),actual:DATA.weight[ALL_DATES[i]]||null});
+    new Chart(ctx,{type:'line',data:{
+      labels:sample.map(function(d){return d.date.split('-').slice(0,2).join(' ');}),
+      datasets:[
+        {label:'Target',data:sample.map(function(d){return d.target;}),borderColor:'rgba(245,166,35,.5)',borderDash:[5,5],borderWidth:2,pointRadius:0,tension:.4},
+        {label:'Actual',data:sample.map(function(d){return d.actual||null;}),borderColor:'#12c78a',backgroundColor:'rgba(18,199,138,.08)',borderWidth:2,pointRadius:3,tension:.4,fill:true,spanGaps:false}
+      ]},options:{responsive:true,plugins:{legend:{labels:{color:'#dde6f0',font:{size:10}}}},scales:{x:{ticks:{color:'#6a85a0',maxTicksLimit:8},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#6a85a0'},grid:{color:'rgba(255,255,255,.04)'}}}}});
   }
   qsa('.winp').forEach(function(e){
-    e.onblur=function(){DATA.weight[this.dataset.date]=this.value;save();};
+    e.onblur=function(){
+      DATA.weight[this.dataset.date]=this.value;
+      save();
+      var stats=calcWeightStats();
+      var etaEl=el('weight-eta');
+      if(etaEl) etaEl.innerHTML='<div style="font-size:.84rem"><i class="fas fa-bullseye" style="color:var(--green);margin-right:6px"></i>At current pace, you will reach <strong>60 kg</strong> by approximately <strong style="color:var(--green)">'+stats.eta+'</strong> · Keep going! 💪</div>';
+    };
   });
 }
 
-// ══════════════════════════════════════════════════════════════════════
-// MCA STUDY PLAN
-// ══════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════
+// MCA STUDY PLAN — with schedule and images
+// ══════════════════════════════════════════════════════════════════════════
 function pgMCA(){
   var subs=[
-    {code:'V24PCA101',n:'Programming Using Java',cr:4,pri:'HIGH',pd:'Mar 20 &ndash; Apr 19',hrs:'5 hrs/wk',
-     top:'OOP, Classes, Inheritance, Polymorphism, Interfaces, Exception Handling, Collections, I/O Streams, Threads',c:'var(--violet)'},
-    {code:'V24PCA102',n:'Operating System',cr:4,pri:'HIGH',pd:'Mar 20 &ndash; Apr 30',hrs:'4 hrs/wk',
-     top:'Process Management, CPU Scheduling (FCFS/SJF/RR), Deadlocks, Memory Management, Virtual Memory, File System',c:'var(--blue)'},
-    {code:'V24PCA103',n:'Database Technology',cr:4,pri:'HIGH',pd:'Mar 20 &ndash; Apr 25',hrs:'5 hrs/wk',
-     top:'ER Diagrams, Relational Model, SQL (DDL/DML/DCL), Normalization 1NF-BCNF, Transactions, ACID, Indexing',c:'var(--green)'},
-    {code:'V24PCA109',n:'Fundamentals of Generative AI &#x2B50;',cr:4,pri:'HIGH',pd:'Apr 1 &ndash; May 15',hrs:'5 hrs/wk',
-     top:'AI &amp; ML basics, Neural Networks, Deep Learning, Transformers, LLMs (GPT/BERT), Prompt Engineering, GANs, Ethical AI',c:'var(--gold)'},
-    {code:'V24PCA107',n:'IT Infrastructure Management',cr:4,pri:'MED',pd:'Apr 15 &ndash; May 20',hrs:'3 hrs/wk',
-     top:'Cloud Computing (IaaS/PaaS/SaaS), Networking, Servers &amp; Virtualization, ITIL, Cybersecurity, Disaster Recovery',c:'var(--amber)'},
-    {code:'V24PCA108',n:'Career Advancement - I',cr:3,pri:'LOW',pd:'Mar 20 &ndash; May 31',hrs:'2 hrs/wk',
-     top:'Resume building, LinkedIn optimization, Interview skills, Communication, Email writing, Career goal setting',c:'var(--red)'}
+    {code:'V24PCA101',n:'Programming Using Java',cr:4,pri:'HIGH',pd:'20-Mar to 19-Apr-2026',hrs:'5 hrs/wk',
+     top:'Week 1-2: OOP — Classes, Objects, Inheritance, Polymorphism, Encapsulation\nWeek 3: Interfaces, Abstract classes, Exception Handling\nWeek 4: Collections Framework (ArrayList, HashMap, LinkedList)\nWeek 5: File I/O, Threads basics\nWeek 6: Revision + Practice problems',
+     img:'https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=400&q=80',c:'var(--violet)'},
+    {code:'V24PCA102',n:'Operating System',cr:4,pri:'HIGH',pd:'20-Mar to 30-Apr-2026',hrs:'4 hrs/wk',
+     top:'Week 1: Process concepts, Process states, PCB\nWeek 2: CPU Scheduling — FCFS, SJF, Priority, Round Robin\nWeek 3: Deadlocks — Prevention, Avoidance, Detection\nWeek 4: Memory Management — Paging, Segmentation\nWeek 5: Virtual Memory, Page Replacement algorithms\nWeek 6: File System, I/O management',
+     img:'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&q=80',c:'var(--blue)'},
+    {code:'V24PCA103',n:'Database Technology',cr:4,pri:'HIGH',pd:'20-Mar to 25-Apr-2026',hrs:'5 hrs/wk',
+     top:'Week 1: ER Diagrams, Relational Model, Keys\nWeek 2: SQL — DDL (CREATE, ALTER, DROP)\nWeek 3: SQL — DML (SELECT, INSERT, UPDATE, DELETE, JOINs)\nWeek 4: Normalization — 1NF, 2NF, 3NF, BCNF\nWeek 5: Transactions, ACID, Concurrency Control\nWeek 6: Indexing, Views, Stored procedures',
+     img:'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=400&q=80',c:'var(--green)'},
+    {code:'V24PCA109',n:'Fundamentals of Generative AI ⭐',cr:4,pri:'HIGH',pd:'01-Apr to 15-May-2026',hrs:'5 hrs/wk',
+     top:'Week 1: AI history, ML basics, Types of ML\nWeek 2: Neural Networks, Activation functions, Backpropagation\nWeek 3: Deep Learning, CNN, RNN basics\nWeek 4: Transformer architecture, Attention mechanism\nWeek 5: LLMs — GPT, BERT, ChatGPT, Prompt Engineering\nWeek 6: GANs, Diffusion models, VAEs, Ethical AI',
+     img:'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=400&q=80',c:'var(--gold)'},
+    {code:'V24PCA107',n:'IT Infrastructure Management',cr:4,pri:'MED',pd:'15-Apr to 20-May-2026',hrs:'3 hrs/wk',
+     top:'Week 1: Cloud Computing — IaaS, PaaS, SaaS, AWS/Azure basics\nWeek 2: Networking — OSI model, TCP/IP, DNS, HTTP/S\nWeek 3: Servers, Virtualization, Containers (Docker basics)\nWeek 4: ITIL Service Management, SLA, ITSM\nWeek 5: Cybersecurity — Threats, Firewalls, Encryption\nWeek 6: Disaster Recovery, Business Continuity',
+     img:'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&q=80',c:'var(--amber)'},
+    {code:'V24PCA108',n:'Career Advancement - I',cr:3,pri:'LOW',pd:'20-Mar to 31-May-2026',hrs:'2 hrs/wk',
+     top:'Week 1-2: Professional resume writing, LinkedIn optimization\nWeek 3: Interview skills — STAR method, common questions\nWeek 4: Communication skills, professional email writing\nWeek 5: Career goal setting, networking strategies\nWeek 6: Mock interview practice + portfolio review',
+     img:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',c:'var(--red)'},
   ];
   var mc='';
   for(var i=0;i<subs.length;i++){
     var s=subs[i],pb=s.pri==='HIGH'?'bgr':s.pri==='MED'?'bga':'bge';
-    mc+='<div class="mcac">'
-      +'<div style="padding:14px;border-bottom:2px solid rgba(100,100,200,.15);display:flex;gap:10px;align-items:flex-start">'
-      +'<div style="width:34px;height:34px;border-radius:8px;background:rgba(100,100,200,.12);display:flex;align-items:center;justify-content:center;font-family:Cinzel,serif;font-weight:700;color:'+s.c+';font-size:.88rem;flex-shrink:0">'+(i+1)+'</div>'
-      +'<div><div style="font-family:Rajdhani;font-size:.66rem;font-weight:700;letter-spacing:1px;color:'+s.c+';margin-bottom:2px">'+s.code+'</div>'
-      +'<div style="font-family:Cinzel,serif;font-size:.84rem;color:var(--txt)">'+s.n+'</div></div></div>'
-      +'<div style="padding:10px 14px;font-size:.74rem;color:var(--mut);line-height:1.62">'+s.top+'</div>'
-      +'<div style="padding:0 14px 12px;display:flex;gap:5px;flex-wrap:wrap">'
-      +'<span class="bdg '+pb+'">'+s.pri+'</span>'
+    mc+='<div class="mcac"><img src="'+s.img+'" alt="'+s.n+'" loading="lazy">'
+      +'<div style="padding:14px">'
+      +'<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px">'
+      +'<div style="width:34px;height:34px;border-radius:8px;background:rgba(100,100,200,.12);display:flex;align-items:center;justify-content:center;font-family:\'Cinzel\',serif;font-weight:700;color:'+s.c+';font-size:.9rem;flex-shrink:0">'+(i+1)+'</div>'
+      +'<div><div style="font-family:\'Rajdhani\';font-size:.66rem;font-weight:700;letter-spacing:1px;color:'+s.c+';margin-bottom:1px">'+s.code+'</div>'
+      +'<div style="font-family:\'Cinzel\',serif;font-size:.87rem;color:var(--txt)">'+s.n+'</div></div></div>'
+      +'<div style="font-size:.75rem;color:var(--txt2);line-height:1.65;white-space:pre-line;margin-bottom:10px">'+s.top+'</div>'
+      +'<div style="display:flex;gap:5px;flex-wrap:wrap">'
+      +'<span class="bdg '+pb+'">'+s.pri+' PRIORITY</span>'
       +'<span class="bdg bgb">'+s.hrs+'</span>'
-      +'<span class="bdg bgv">'+s.cr+' Cr</span>'
-      +'<span style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:2px 7px;font-size:.65rem;color:var(--mut);font-family:\'Rajdhani\'">'+s.pd+'</span>'
+      +'<span class="bdg bgv">'+s.cr+' Credits</span>'
+      +'<span class="bdg" style="background:rgba(255,255,255,.05);color:var(--txt2);border-color:var(--bdr)">📅 '+s.pd+'</span>'
+      +'</div></div></div>';
+  }
+  var timeline=[
+    {week:'Week 1-2','dates':'20-Mar to 02-Apr',focus:'Java OOP + OS Process concepts + DB ER Diagrams',tip:'Foundation week — set up your study environment'},
+    {week:'Week 3-4','dates':'03-Apr to 16-Apr',focus:'Java Collections + CPU Scheduling + SQL basics + Gen AI intro',tip:'Most important weeks — core concepts for all subjects'},
+    {week:'Week 5-6','dates':'17-Apr to 30-Apr',focus:'Java I/O + Deadlocks + Normalization + IT Infra Cloud',tip:'Deep dive week — spend extra time on tough topics'},
+    {week:'Week 7-8','dates':'01-May to 14-May',focus:'Transformers/LLMs + Memory Management + SQL advanced',tip:'Gen AI specialization week — your key subject'},
+    {week:'Week 9-10','dates':'15-May to 28-May',focus:'Full revision all subjects + previous year questions',tip:'Exam prep — practice problems for every topic'},
+    {week:'Exam Week','dates':'June 2026','focus':'📝 SEMESTER 1 EXAMINATION','tip':'Be confident — you have prepared well'},
+  ];
+  var tlh='';
+  for(var i=0;i<timeline.length;i++){
+    var t=timeline[i],isExam=(i===5);
+    tlh+='<div style="display:flex;gap:14px;margin-bottom:14px">'
+      +'<div style="width:32px;height:32px;border-radius:50%;background:'+(isExam?'var(--red)':'var(--card3)')+';border:2px solid '+(isExam?'var(--red)':'var(--bdr2)')+';display:flex;align-items:center;justify-content:center;font-size:.8rem;color:'+(isExam?'#fff':'var(--gold)')+';flex-shrink:0;z-index:1;margin-top:2px">'+(isExam?'📝':(i+1))+'</div>'
+      +'<div style="flex:1;background:var(--card);border:1px solid '+(isExam?'rgba(240,64,64,.3)':'var(--bdr)')+';border-radius:10px;padding:13px">'
+      +'<div style="display:flex;align-items:center;gap:9px;margin-bottom:6px;flex-wrap:wrap">'
+      +'<span style="font-family:\'Cinzel\',serif;color:'+(isExam?'var(--red)':'var(--gold)')+';font-size:.88rem;font-weight:700">'+t.week+'</span>'
+      +'<span class="bdg '+(isExam?'bgr':'bg')+'">'+t.dates+'</span></div>'
+      +'<div style="font-size:.8rem;color:var(--txt);margin-bottom:5px">'+t.focus+'</div>'
+      +'<div style="font-size:.72rem;color:var(--txt2)"><i class="fas fa-lightbulb" style="color:var(--amber);margin-right:4px"></i>'+t.tip+'</div>'
       +'</div></div>';
   }
-  return hero('Online MCA &bull; Semester 1 &bull; Specialization: Generative AI','MCA <span>Study Plan</span>',
-    '6 subjects &bull; Study: 20-March to 31-May-2026 &bull; Exam: June 2026',
-    'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1200&q=80','','145px')
-  +'<div class="ib"><div style="font-family:Cinzel,serif;color:var(--gold);margin-bottom:3px">&#x23F0; Exam Countdown</div>'
-  +'<div style="font-size:.8rem">Study window: <strong>20-March-2026 to 31-May-2026</strong> &nbsp;|&nbsp; Exam: <strong>June 2026</strong></div></div>'
+  return hero('Online MCA · Semester 1 · Specialization: Generative AI','MCA <span>Study Plan</span>',
+    '6 subjects · Study: 20-March to 31-May-2026 · Exam: June 2026',
+    'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1200&q=80','','148px')
+  +'<div class="ib" style="margin:14px 24px">'
+  +'<div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">'
+  +'<div style="font-family:\'Cinzel\',serif;color:var(--gold);font-size:.88rem">⏰ Exam Countdown</div>'
+  +'<div style="font-size:.82rem;color:var(--txt2)">Study: <strong>20-March-2026</strong> → <strong>31-May-2026</strong> · Exam: <strong style="color:var(--red)">June 2026</strong> · Total study days: <strong>72 days</strong></div>'
+  +'<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="bdg bgr">HIGH: Java, OS, DB, GenAI</span><span class="bdg bga">MED: IT Infra</span><span class="bdg bge">LOW: Career Adv</span></div>'
+  +'</div></div>'
+  +'<div class="sh"><h2>📅 Week-by-Week Study Timeline</h2></div>'
+  +'<div style="padding:14px 24px;position:relative"><div style="position:absolute;left:36px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--gold),var(--green),var(--red))"></div>'+tlh+'</div>'
+  +'<div class="sh"><h2>Subject Details & Coverage</h2></div>'
   +'<div class="mcag">'+mc+'</div>';
 }
 
-// ══════════════════════════════════════════════════════════════════════
-// BIBLE READING
-// ══════════════════════════════════════════════════════════════════════
-var BP=0,BPER=30;
-function pgBible(){
-  var total=Math.ceil(365/BPER),td=today();
-  var todayRow=null;
-  for(var i=0;i<BIBLE_PLAN.length;i++){if(BIBLE_PLAN[i].date===td){todayRow=BIBLE_PLAN[i];break;}}
-  var tb='';
-  if(todayRow){
-    var bd=DATA.bible[todayRow.day]||{};
-    tb='<div class="ib"><div style="font-family:Rajdhani;color:var(--gold);font-weight:700;margin-bottom:3px">&#x1F4D6; TODAY&#x27;S READING &mdash; '+todayRow.date+'</div>'
-      +'<div style="font-family:Cinzel,serif;font-size:.9rem;margin-bottom:8px">'+todayRow.reading+'</div>'
-      +'<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">'
-      +'<span style="font-size:.74rem;color:var(--mut)">Morning Prayer:</span>'
-      +'<div class="ck'+(bd.mp?' on':'')+'" data-day="'+todayRow.day+'" data-field="mp">&#10003;</div>'
-      +'<span style="font-size:.74rem;color:var(--mut);margin-left:5px">Evening Prayer:</span>'
-      +'<div class="ck'+(bd.ep?' on':'')+'" data-day="'+todayRow.day+'" data-field="ep">&#10003;</div>'
+// ══════════════════════════════════════════════════════════════════════════
+// CAREER ROADMAP
+// ══════════════════════════════════════════════════════════════════════════
+function pgCareer(){
+  var phases=[
+    {c:'var(--blue)',i:'fa-shield-halved',ph:'Current Role',ti:'Mar–Jun 2026',duration:'4 months',
+     desc:'You are already a Manual QA Engineer. Before moving to automation, master these advanced skills that will make you stand out even among automation engineers.',
+     top:['Advanced test case design: Boundary Value Analysis (BVA), Equivalence Partitioning (EP), Decision Table, State Transition Testing',
+          'Jira mastery: bug reporting with exact reproduction steps, severity vs priority, defect lifecycle management',
+          'Test artifacts: Test Plan, Test Strategy, RTM (Requirements Traceability Matrix)',
+          'API testing basics: Postman — GET/POST/PUT/DELETE, status codes, headers, response validation',
+          'SQL for QA: SELECT, WHERE, JOINs, GROUP BY — data validation in databases',
+          'Agile ceremonies: sprint planning, daily standups, retrospectives — speak up in meetings'],
+     tools:['Jira','MySQL','Postman','Confluence','Swagger'],out:'Expert manual tester · Strong QA portfolio ready · Interview-ready for senior manual QA roles',
+     img:'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&q=80'},
+    {c:'var(--gold)',i:'fa-java',ph:'Phase 1',ti:'Jul–Aug 2026',duration:'2 months',
+     desc:'Java is the foundation of Selenium automation. Take it seriously — weak Java = weak automation. 1.5 hours every day after work.',
+     top:['Java basics: data types, operators, control flow (if/else, loops, switch)',
+          'OOP concepts: classes, objects, constructor, this keyword',
+          'Inheritance: extends keyword, method overriding, super keyword',
+          'Polymorphism, Encapsulation, Abstraction — with real examples',
+          'Collections: ArrayList, HashMap, HashSet — most used in test automation',
+          'Exception handling: try-catch-finally, custom exceptions',
+          'Practice: Solve 50+ problems on HackerRank Java track'],
+     tools:['Java','IntelliJ IDEA','HackerRank','JDK 17'],out:'Write clean Java code confidently · Ready for Selenium framework development',
+     img:'https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=500&q=80'},
+    {c:'var(--green)',i:'fa-robot',ph:'Phase 2',ti:'Sep–Oct 2026',duration:'2 months',
+     desc:'Selenium is the most in-demand automation skill. Learn it properly with POM design pattern and you will be ready for 80% of QA job requirements.',
+     top:['Selenium WebDriver setup: Maven project, dependencies, ChromeDriver',
+          'Locating elements: ID, Name, XPath (absolute/relative), CSS selector — master all',
+          'Browser interactions: click, sendKeys, clear, getText, getAttribute',
+          'Waits: ImplicitWait, ExplicitWait (WebDriverWait), FluentWait — avoid flaky tests',
+          'Page Object Model (POM): design pattern for maintainable test code',
+          'TestNG framework: @Test, @BeforeMethod, @AfterClass, @DataProvider',
+          'Data-driven testing with Excel/JSON input files',
+          'Cross-browser testing: Chrome, Firefox, Edge'],
+     tools:['Selenium 4','TestNG','Maven','WebDriver Manager'],out:'Automated UI test suite with POM · Real GitHub project · Ready for automation QA interviews',
+     img:'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=500&q=80'},
+    {c:'var(--violet)',i:'fa-code-branch',ph:'Phase 3',ti:'Nov–Dec 2026',duration:'2 months',
+     desc:'This phase separates good automation engineers from great ones. Framework + API automation = complete QA engineer.',
+     top:['REST Assured: API automation in Java — GET/POST/PUT/DELETE requests',
+          'JSON path assertions: validate response body, status codes, headers',
+          'Hybrid framework: combine Selenium + REST Assured + TestNG in one project',
+          'BDD with Cucumber: write test scenarios in Gherkin (Given-When-Then)',
+          'Allure Reports: generate beautiful test reports automatically',
+          'Git: branching strategy (main/dev/feature), pull requests, code review',
+          'Jenkins CI/CD: create pipeline to run tests automatically on every code push',
+          'Build real-world project: E-commerce test automation suite'],
+     tools:['REST Assured','Cucumber','Git','GitHub','Jenkins','Allure'],out:'Hybrid framework on GitHub · CI pipeline running · BDD test scenarios · Ready for senior roles',
+     img:'https://images.unsplash.com/photo-1618477388954-7852f32655ec?w=500&q=80'},
+    {c:'var(--red)',i:'fa-trophy',ph:'Phase 4',ti:'Jan–Feb 2027',duration:'2 months',
+     desc:'Final push. Position yourself, apply aggressively, and negotiate confidently. You have all the skills now.',
+     top:['Resume tailoring: list exact tools (Selenium, TestNG, REST Assured, Cucumber, Jenkins)',
+          'LinkedIn headline: "QA Automation Engineer | Selenium | Java | TestNG | REST Assured"',
+          'Portfolio: pin 2-3 GitHub automation projects with clear README',
+          'Mock technical interviews: Selenium questions, Java questions, framework design',
+          'Companies to target: TCS, Infosys, Wipro, Cognizant (experienced), product companies',
+          'Salary expectation: for 2-3 years experience, target 40-70% hike',
+          'Negotiation: never accept first offer · counter with competing offers'],
+     tools:['LinkedIn','Naukri','Indeed','Glassdoor'],out:'🏆 Job Switch Achieved! · 40–70% salary hike · Automation QA Engineer title',
+     img:'https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&q=80'},
+  ];
+  var tl='';
+  for(var i=0;i<phases.length;i++){
+    var p=phases[i];
+    var tags=''; for(var j=0;j<p.tools.length;j++) tags+='<span style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:2px 7px;font-size:.67rem;color:var(--txt2);font-family:\'Rajdhani\'">'+p.tools[j]+'</span> ';
+    var steps=''; for(var j=0;j<p.top.length;j++) steps+='<div style="display:flex;gap:7px;margin-bottom:5px"><span style="color:'+p.c+';flex-shrink:0;margin-top:1px">▸</span><span style="font-size:.78rem;color:var(--txt2);line-height:1.6">'+p.top[j]+'</span></div>';
+    tl+='<div class="tli">'
+      +'<div class="tlico" style="color:'+p.c+';background:rgba(100,100,200,.1);border-color:'+p.c+'"><i class="fas '+p.i+'"></i></div>'
+      +'<div class="tlb">'
+      +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">'
+      +'<span style="font-family:\'Cinzel\',serif;color:'+p.c+';font-size:.92rem;font-weight:700">'+p.ph+'</span>'
+      +'<span class="bdg bg">'+p.ti+'</span>'
+      +'<span class="bdg" style="background:rgba(255,255,255,.05);color:var(--txt2);border-color:var(--bdr)">'+p.duration+'</span>'
+      +'</div>'
+      +'<div style="font-size:.81rem;color:var(--txt2);line-height:1.65;margin-bottom:10px;padding:9px 11px;background:rgba(255,255,255,.03);border-radius:7px;border-left:3px solid '+p.c+'">'+p.desc+'</div>'
+      +'<div style="font-family:\'Rajdhani\';font-weight:700;color:var(--txt);font-size:.78rem;margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px">What To Learn:</div>'
+      +steps
+      +'<div style="display:flex;gap:5px;flex-wrap:wrap;margin:9px 0 7px">'+tags+'</div>'
+      +'<div style="font-size:.78rem;color:var(--green);border-top:1px solid var(--bdr);padding-top:7px"><i class="fas fa-star" style="margin-right:5px;color:var(--amber)"></i>'+p.out+'</div>'
       +'</div></div>';
   }
-  var rows=BIBLE_PLAN.slice(BP*BPER,(BP+1)*BPER);
-  var tr='';
+  var monthly=[['Jul 2026','Java OOP + basics + HackerRank practice','1.5 hrs/day'],
+    ['Aug 2026','Selenium setup + first script + browser interactions + waits','1.5 hrs/day'],
+    ['Sep 2026','POM design + TestNG framework + data-driven testing','2 hrs/day'],
+    ['Oct 2026','Framework polish + cross-browser + GitHub portfolio upload','2 hrs/day'],
+    ['Nov 2026','REST Assured + hybrid framework + Cucumber + BDD','2 hrs/day'],
+    ['Dec 2026','Jenkins CI + Allure reports + full framework complete','2 hrs/day'],
+    ['Jan 2027','Mock interviews + resume tailoring + LinkedIn update + apply to 20+ companies','2.5 hrs/day'],
+    ['Feb 2027','Interview rounds + offer negotiation + Job Switch ✅','—']];
+  var mr=''; for(var i=0;i<monthly.length;i++){var m=monthly[i];mr+='<tr><td style="font-family:\'Cinzel\',serif;color:var(--gold);white-space:nowrap">'+m[0]+'</td><td style="font-size:.77rem;color:var(--txt2)">'+m[1]+'</td><td><span class="bdg bgb">'+m[2]+'</span></td></tr>';}
+  return hero('Manual QA → Automation Engineer — Complete Roadmap','Career <span>Roadmap</span>',
+    'You are already a Manual QA Engineer. Automation learning starts July 2026. Job switch target: February 2027.',
+    'https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=1400&q=80',
+    hst('Current','Manual QA')+hst('Jul 2026','Automation Start')+hst('Feb 2027','Job Switch')+hst('40-70%','Salary Hike'),'170px')
+  +'<div class="tl">'+tl+'</div>'
+  +'<div class="sh"><h2>📅 Monthly Learning Plan (Jul 2026 – Feb 2027)</h2></div>'
+  +'<div class="twrap"><table><thead><tr><th>Month</th><th>What to Learn</th><th>Daily Hours</th></tr></thead><tbody>'+mr+'</tbody></table></div>';
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// HAIR RESTORATION — with HD images
+// ══════════════════════════════════════════════════════════════════════════
+function pgHair(){
+  var steps=[
+    {n:1,t:'When to Apply',b:'Every Wednesday & Saturday evening, before bath. Two times per week is the proven optimal frequency for genetic DHT management and body heat reduction.',img:'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80'},
+    {n:2,t:'Warm the Oil Correctly',b:'Pour groundnut oil into small steel bowl. Heat on low flame OR warm water bath until lukewarm — never hot. Add 6-8 fresh curry leaves. Lukewarm oil penetrates follicles 3x deeper than cold oil.',img:'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=400&q=80'},
+    {n:3,t:'Proper Scalp Massage (15-20 min)',b:'Part hair into sections. Apply oil directly to SCALP (not hair strands). Use CIRCULAR motion with fingertip pads — firm but gentle. Start from front hairline, work toward back. Focus EXTRA time on back of head where you have thinning. Final 2 minutes: tap scalp lightly with fingertips to stimulate dormant follicles.',img:'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=80'},
+    {n:4,t:'Leave Duration',b:'Minimum 2 hours. BEST: leave overnight. Wrap hair with soft cotton cloth or old t-shirt. Your body does deep repair during sleep — oil treatment works synergistically with your natural repair cycle.',img:'https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=400&q=80'},
+    {n:5,t:'Natural Wash (No Shampoo)',b:'Mix 2 tbsp Shikakai powder + 1 tbsp Reetha powder + warm water → make paste. Apply to scalp and hair, wait 5 minutes, rinse thoroughly with cool water. Zero SLS, Zero paraben. Your scalp\'s natural oil balance stays intact.',img:'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=400&q=80'},
+    {n:6,t:'Power Oil Blend Formula',b:'The ultimate mix: Groundnut base 50% + Coconut oil 30% + Castor oil 10% + Bhringraj oil 10%. Optional boost: add 5 drops Neem oil. Castor = ricinoleic acid (clinically proven prostaglandin E2 increase = hair growth). Bhringraj = Eclipta prostrata — Ayurvedic DHT-5-alpha reductase inhibitor.',img:'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=400&q=80'},
+  ];
+  var foods=[
+    {e:'🥜',n:'Groundnuts',w:'Small handful every day',y:'Biotin + Vitamin E + Protein — shaft strength',img:'https://images.unsplash.com/photo-1567306301408-9b74779a11af?w=300&q=80'},
+    {e:'🌿',n:'Curry Leaves',w:'10 raw every morning',y:'Beta-carotene + Iron — rebuilds follicles',img:'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=300&q=80'},
+    {e:'🫘',n:'Sprouted Moong',w:'Daily at breakfast',y:'Protein + Zinc — plant protein for hair',img:'https://images.unsplash.com/photo-1547592180-85f173990554?w=300&q=80'},
+    {e:'🍃',n:'Amla (Gooseberry)',w:'2-3 raw daily',y:'Highest Vit C — blocks DHT enzyme',img:'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=300&q=80'},
+    {e:'🌾',n:'Fenugreek (Methi)',w:'1 tsp soaked, every morning',y:'Lecithin + Nicotinic acid',img:'https://images.unsplash.com/photo-1587244289783-6e4a5a9f4ac0?w=300&q=80'},
+    {e:'🧅',n:'Onion Juice',w:'Apply to scalp 2-3x/week',y:'Sulfur → 74% regrowth in studies',img:'https://images.unsplash.com/photo-1518977956812-cd3dbadaaf31?w=300&q=80'},
+    {e:'🥗',n:'Spinach (Palak)',w:'3-4 times per week',y:'Iron + Folate — #1 hidden hair loss cause',img:'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=300&q=80'},
+    {e:'💧',n:'3L Water Daily',w:'Every day — already in your plan',y:'Scalp hydration = slower hair fall',img:'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=300&q=80'},
+  ];
+  var fg=''; for(var i=0;i<foods.length;i++){var f=foods[i];fg+='<div class="hcard"><img src="'+f.img+'" alt="'+f.n+'" loading="lazy"><div class="hcard-body"><div style="display:flex;align-items:center;gap:7px;margin-bottom:5px"><span style="font-size:1.3rem">'+f.e+'</span><div style="font-family:\'Cinzel\',serif;font-size:.86rem;color:var(--gold)">'+f.n+'</div></div><div style="font-size:.71rem;color:var(--green);margin-bottom:4px"><i class="fas fa-clock" style="margin-right:3px"></i>'+f.w+'</div><div style="font-size:.73rem;color:var(--txt2);line-height:1.5">'+f.y+'</div></div></div>';}
+  var oilH=''; for(var i=0;i<steps.length;i++){var s=steps[i];oilH+='<div style="display:grid;grid-template-columns:auto 1fr;gap:14px;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-bottom:11px;transition:transform .2s" onmouseover="this.style.transform=\'translateX(4px)\'" onmouseout="this.style.transform=\'\'"><img src="'+s.img+'" alt="'+s.t+'" style="width:100px;height:100%;min-height:90px;object-fit:cover;filter:brightness(.8)"><div style="padding:13px"><div style="display:flex;align-items:center;gap:9px;margin-bottom:5px"><div style="width:26px;height:26px;border-radius:50%;background:var(--gold2);color:#000;display:flex;align-items:center;justify-content:center;font-family:\'Cinzel\',serif;font-weight:700;font-size:.8rem;flex-shrink:0">'+s.n+'</div><div style="font-family:\'Rajdhani\';font-weight:700;color:var(--gold);font-size:.9rem">'+s.t+'</div></div><div style="font-size:.77rem;color:var(--txt2);line-height:1.6">'+s.b+'</div></div></div>';}
+  var wk=[
+    {d:'MON',a:'Eat curry leaves + amla\nScalp: rest day',sp:false},
+    {d:'TUE',a:'Apply onion juice\n30 min, then rinse',sp:false},
+    {d:'WED',a:'🥜 OIL BATH #1\nWarm oil + curry leaves\nShikakai wash',sp:true},
+    {d:'THU',a:'Eat fenugreek seeds\nDry scalp massage 5 min',sp:false},
+    {d:'FRI',a:'Eat amla + sprouted moong\nScalp rest',sp:false},
+    {d:'SAT',a:'🥜 OIL BATH #2\nOil blend overnight\nReetha powder wash',sp:true},
+    {d:'SUN',a:'Complete scalp rest\nMonthly photo check',sp:false},
+  ];
+  var hw=''; for(var i=0;i<wk.length;i++){var w=wk[i];hw+='<div class="hwd'+(w.sp?' sp':'')+'"><div style="font-family:\'Cinzel\',serif;font-size:.74rem;color:var(--gold);margin-bottom:5px">'+w.d+'</div><div style="font-size:.68rem;color:var(--txt2);line-height:1.52;white-space:pre-line">'+w.a+'</div></div>';}
+  return hero('100% Natural · No Chemicals · No Minoxidil','Hair <span>Restoration</span> Plan',
+    'Groundnut oil baths twice weekly · Ayurvedic approach for genetic hair loss · Your own plan, perfected',
+    'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1400&q=80','','155px')
+  +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:11px;padding:14px 24px 0">'
+  +'<div style="background:var(--card);border:1px solid rgba(240,64,64,.25);border-left:3px solid var(--red);border-radius:0;padding:12px;display:flex;gap:10px"><i class="fas fa-dna" style="color:var(--red);font-size:.95rem;padding-top:2px;flex-shrink:0"></i><div><div style="font-family:\'Rajdhani\';font-weight:700;color:var(--red);margin-bottom:2px;font-size:.9rem">Genetic DHT (Father & Mother)</div><div style="font-size:.76rem;color:var(--txt2)">DHT shrinks follicles — inherited from both sides. Manageable with natural DHT blockers (amla, bhringraj) and oil massage</div></div></div>'
+  +'<div style="background:var(--card);border:1px solid rgba(245,158,11,.25);border-left:3px solid var(--amber);border-radius:0;padding:12px;display:flex;gap:10px"><i class="fas fa-fire" style="color:var(--amber);font-size:.95rem;padding-top:2px;flex-shrink:0"></i><div><div style="font-family:\'Rajdhani\';font-weight:700;color:var(--amber);margin-bottom:2px;font-size:.9rem">Body Heat — Your Root Cause</div><div style="font-size:.76rem;color:var(--txt2)">High body heat weakens roots from crown and back. Your groundnut oil bath plan is EXACTLY the right solution — keep it consistent</div></div></div>'
+  +'<div style="background:var(--card);border:1px solid rgba(18,199,138,.25);border-left:3px solid var(--green);border-radius:0;padding:12px;display:flex;gap:10px"><i class="fas fa-circle-check" style="color:var(--green);font-size:.95rem;padding-top:2px;flex-shrink:0"></i><div><div style="font-family:\'Rajdhani\';font-weight:700;color:var(--green);margin-bottom:2px;font-size:.9rem">Your Smart Decision ✅</div><div style="font-size:.76rem;color:var(--txt2)">Choosing groundnut oil + natural foods over chemicals/minoxidil is the right choice. Safer, sustainable, no side effects</div></div></div>'
+  +'</div>'
+  +'<div class="sh"><h2>🥜 Groundnut Oil Bath — Complete Guide</h2><span class="bdg bg">Every Wed & Sat</span></div>'
+  +'<div style="padding:12px 24px">'+oilH+'</div>'
+  +'<div class="sh"><h2>Natural Hair Growth Foods</h2></div>'
+  +'<div class="hgrid">'+fg+'</div>'
+  +'<div class="sh"><h2>Weekly Hair Care Schedule</h2></div>'
+  +'<div class="hwk">'+hw+'</div>';
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// HEALTHY MIND — larger fonts, HD images
+// ══════════════════════════════════════════════════════════════════════════
+function pgHM(){
+  var trgs=[
+    {t:'Being alone at home',r:'HIGH',c:'var(--red)',a1:'Go for a walk outside IMMEDIATELY — not later',a2:'Cold water face wash + 20 push-ups right now',root:'Plan activities for every hour you are home alone. Empty time is your enemy.',img:'https://images.unsplash.com/photo-1545389336-cf090694435e?w=400&q=80'},
+    {t:'Late night mobile use',r:'HIGH',c:'var(--red)',a1:'Put phone on charger in another room by 10:00 PM',a2:'Read Bible or write in journal for 15 minutes',root:'Set a hard 10 PM rule for your phone. Use app timers. This single habit change makes everything else easier.',img:'https://images.unsplash.com/photo-1512428559087-560fa5ceab42?w=400&q=80'},
+    {t:'Boredom / idle mind',r:'MED',c:'var(--amber)',a1:'Open your study material or career task IMMEDIATELY',a2:'Call a family member or trusted friend',root:'A disciplined man is never bored. Fill your schedule with purpose — study, exercise, Bible, prayer.',img:'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&q=80'},
+    {t:'Stress from work or life',r:'MED',c:'var(--amber)',a1:'Take a 10-minute walk and breathe deeply (4-7-8 breathing)',a2:'Write your stress in a journal — name it, own it, release it',root:'Stress and discipline are enemies. Build stress tolerance through consistent morning walks and prayer.',img:'https://images.unsplash.com/photo-1574015974293-817f0ebebb74?w=400&q=80'},
+    {t:'Social media scrolling',r:'HIGH',c:'var(--red)',a1:'Close the app immediately. Set a 30-minute daily limit',a2:'Do 50 squats or push-ups — redirect the energy',root:'Delete Instagram/reels from home screen. Use grayscale phone mode. Social media is the #1 trigger.',img:'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&q=80'},
+    {t:'Night urge before sleep',r:'HIGH',c:'var(--red)',a1:'Pray immediately and sincerely — this is your strongest weapon',a2:'Read one Bible chapter with full attention + deep breathing',root:'Sleep by 10:30 PM every night — a tired body has far fewer urges. The battle is won by 10:30 PM.',img:'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=400&q=80'},
+  ];
+  var tc='';
+  for(var i=0;i<trgs.length;i++){
+    var t=trgs[i],rb=t.r==='HIGH'?'bgr':'bga';
+    tc+='<div class="trc" style="overflow:hidden">'
+      +'<div style="display:flex;align-items:flex-start;gap:13px">'
+      +'<img src="'+t.img+'" alt="" style="width:80px;height:80px;object-fit:cover;border-radius:8px;filter:brightness(.7);flex-shrink:0">'
+      +'<div style="flex:1">'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">'
+      +'<span style="font-family:\'Cinzel\',serif;font-weight:700;color:var(--txt);font-size:.95rem">'+t.t+'</span>'
+      +'<span class="bdg '+rb+'">'+t.r+' RISK</span></div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">'
+      +'<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:9px"><div style="font-family:\'Rajdhani\';font-weight:700;color:var(--txt);font-size:.78rem;margin-bottom:3px">⚡ Do This NOW</div><div style="font-size:.78rem;color:var(--txt2);line-height:1.6">'+t.a1+'</div></div>'
+      +'<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:9px"><div style="font-family:\'Rajdhani\';font-weight:700;color:var(--txt);font-size:.78rem;margin-bottom:3px">🔄 Backup Plan</div><div style="font-size:.78rem;color:var(--txt2);line-height:1.6">'+t.a2+'</div></div>'
+      +'</div>'
+      +'<div style="font-size:.78rem;color:var(--txt2);padding:8px 10px;background:rgba(245,166,35,.05);border-radius:7px;border-left:3px solid var(--gold);line-height:1.6"><strong style="color:var(--gold)">Root Fix: </strong>'+t.root+'</div>'
+      +'</div></div></div>';
+  }
+  var bens=[
+    {d:'Day 1–7',ph:'The Foundation',e:'Urges are strongest now — your brain is resisting change. This is normal. Every time you resist, you are literally rewiring neural pathways.',ch:'Restlessness, mood swings, difficulty concentrating',tip:'Just survive Day 7. That\'s all.',c:'var(--red)'},
+    {d:'Day 8–30',ph:'Clarity Begins',e:'Energy levels noticeably higher. Morning focus improves. You start feeling proud of yourself — a feeling you haven\'t felt in a while.',ch:'Occasional strong urges, especially at night',tip:'Celebrate reaching Day 30 — reward yourself (healthy reward).',c:'var(--amber)'},
+    {d:'Day 31–90',ph:'The Transformation',e:'Confidence increases in social situations. Gym performance improves. People notice you are different — calmer, more focused, more present.',ch:'Less frequent urges — mostly triggered by stress',tip:'This is where real transformation happens. Protect this phase.',c:'var(--blue)'},
+    {d:'Day 91–180',ph:'New Identity',e:'Your old urges feel distant. You have built a new identity as a disciplined man. Career focus sharpens. Studies feel easier. God feels closer.',ch:'Occasional stress-related urge',tip:'You are who you decide to be. You decided to be this man.',c:'var(--green)'},
+    {d:'Day 181–365',ph:'Complete Mastery',e:'Peak performance in every area — career, health, faith, relationships. Self-respect at an all-time high. You have become the man you chose to become.',ch:'Almost nothing — discipline is now your identity',tip:'You won. Now mentor others. Pay it forward.',c:'var(--gold)'},
+  ];
+  var bn='';
+  for(var i=0;i<bens.length;i++){
+    var b=bens[i];
+    bn+='<div style="background:var(--card);border:1px solid rgba(100,100,200,.2);border-left:3px solid '+b.c+';border-radius:var(--r);padding:15px;margin-bottom:11px;transition:transform .2s" onmouseover="this.style.transform=\'translateX(4px)\'" onmouseout="this.style.transform=\'\'">'
+      +'<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">'
+      +'<div style="min-width:88px;font-family:\'Cinzel\',serif;color:'+b.c+';font-size:.88rem;font-weight:700">'+b.d+'</div>'
+      +'<div style="font-family:\'Cinzel\',serif;color:var(--txt);font-size:.95rem;font-weight:500">'+b.ph+'</div>'
+      +'</div>'
+      +'<div style="font-size:.83rem;color:var(--txt2);line-height:1.7;margin-bottom:7px">'+b.e+'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'
+      +'<div style="font-size:.76rem;color:var(--red);background:rgba(240,64,64,.05);border-radius:6px;padding:6px 9px"><strong>Challenge:</strong> '+b.ch+'</div>'
+      +'<div style="font-size:.76rem;color:var(--green);background:rgba(18,199,138,.05);border-radius:6px;padding:6px 9px"><strong>Remember:</strong> '+b.tip+'</div>'
+      +'</div></div>';
+  }
+  return hero('Your Mental Discipline System','Healthy <span>Mind</span> System',
+    '"Every time you resist, you build the man you want to become. Every day of discipline is a vote for your future self."',
+    'https://images.unsplash.com/photo-1545389336-cf090694435e?w=1400&q=80','','165px')
+  +'<div class="sh"><h2>🚨 Trigger → Response Protocol</h2></div>'
+  +'<div style="padding:13px 24px">'+tc+'</div>'
+  +'<div class="sh"><h2>📈 Benefits Timeline — What to Expect</h2></div>'
+  +'<div style="padding:13px 24px">'+bn+'</div>';
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// BIBLE READING — fixed checkboxes, integrated
+// ══════════════════════════════════════════════════════════════════════════
+var BP=0,BPER=30;
+function pgBible(){
+  var total=Math.ceil(365/BPER),td=today(),dn=getDayNum();
+  var tr=BIBLE_PLAN[dn-1];
+  var bd=DATA.bible[dn]||{};
+  return hero('Complete Bible in One Year','<span>Bible</span> Reading Plan',
+    '1,189 chapters · 66 books · 3–4 chapters/day · Genesis to Revelation',
+    'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=1400&q=80','','155px')
+  +'<div class="spi-today">'
+  +'<div style="font-family:\'Rajdhani\';color:var(--gold);font-weight:700;font-size:.9rem;margin-bottom:4px">📖 TODAY\'S READING — '+td+'</div>'
+  +'<div class="verse-display">'+tr.reading+'</div>'
+  +'<div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:10px">'
+  +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:.82rem;color:var(--txt2)">Morning Prayer:</span><div class="ck'+(bd.mp?' on':'')+'" data-day="'+dn+'" data-field="mp">&#10003;</div></div>'
+  +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:.82rem;color:var(--txt2)">Evening Prayer:</span><div class="ck'+(bd.ep?' on':'')+'" data-day="'+dn+'" data-field="ep">&#10003;</div></div>'
+  +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:.82rem;color:var(--txt2)">Chapters Read:</span><div class="ck'+(bd.read?' on':'')+'" data-day="'+dn+'" data-field="read">&#10003;</div></div>'
+  +'</div>'
+  +'<div style="margin-top:10px"><input class="inp bref" data-day="'+dn+'" placeholder="Write today\'s key verse or reflection..." style="font-size:.82rem" value="'+esc(bd.ref||'')+'"></div>'
+  +'</div>'
+  +'<div style="display:flex;gap:8px;padding:0 24px 8px;flex-wrap:wrap;align-items:center">'
+  +'<div style="width:11px;height:11px;background:rgba(245,158,11,.5);border-radius:2px"></div><span style="font-size:.72rem;color:var(--txt2)">Old Testament</span>'
+  +'<div style="width:11px;height:11px;background:rgba(61,155,233,.5);border-radius:2px;margin-left:8px"></div><span style="font-size:.72rem;color:var(--txt2)">New Testament</span>'
+  +'<div style="width:11px;height:11px;background:rgba(155,108,245,.5);border-radius:2px;margin-left:8px"></div><span style="font-size:.72rem;color:var(--txt2)">Both</span>'
+  +'<span style="margin-left:auto;font-size:.72rem;color:var(--txt2)">Day '+dn+' of 365 · '+Math.round(dn/365*100)+'% complete</span>'
+  +'</div>'
+  +'<div class="twrap">'+bibleTable(BP)+'</div>'
+  +'<div class="pag">'+biblePagBtns(total)+'</div>';
+}
+
+function bibleTable(pg){
+  var rows=BIBLE_PLAN.slice(pg*BPER,(pg+1)*BPER),td=today(),h='';
+  h='<table><thead><tr><th>Day</th><th>Date</th><th>Reading</th><th>Testament</th><th>Books</th><th style="min-width:36px">Read ✓</th><th style="min-width:36px">Morn ✓</th><th style="min-width:36px">Eve ✓</th><th>Reflection</th></tr></thead><tbody>';
   for(var i=0;i<rows.length;i++){
     var r=rows[i],bd=DATA.bible[r.day]||{},isT=(r.date===td);
     var rc=r.testament==='OT'?'otr':r.testament==='NT'?'ntr':'mtr';
     var tbdg=r.testament==='OT'?'bg':r.testament==='NT'?'bgb':'bgv';
-    tr+='<tr class="'+rc+'" style="'+(isT?'background:rgba(245,166,35,.05)':'')+'">'
-      +'<td style="color:var(--gold);font-family:Cinzel,serif;font-weight:700;font-size:.8rem">'+r.day+'</td>'
-      +'<td style="white-space:nowrap;font-size:.74rem;color:'+(isT?'var(--gold)':'var(--txt)')+'">'+r.date+'</td>'
-      +'<td style="font-size:.76rem">'+r.reading+'</td>'
+    h+='<tr class="'+rc+(isT?' today-row':'')+'">'
+      +'<td style="color:var(--gold);font-family:\'Cinzel\',serif;font-weight:700;font-size:.8rem">'+r.day+'</td>'
+      +'<td style="white-space:nowrap;font-size:.75rem;color:'+(isT?'var(--gold)':'var(--txt)')+'">'+r.date+'</td>'
+      +'<td style="font-size:.77rem">'+r.reading+'</td>'
       +'<td><span class="bdg '+tbdg+'">'+r.testament+'</span></td>'
-      +'<td style="font-size:.7rem;color:var(--mut)">'+r.books.join(', ')+'</td>'
+      +'<td style="font-size:.7rem;color:var(--txt2);max-width:120px">'+r.books.slice(0,2).join(', ')+(r.books.length>2?'…':'')+'</td>'
+      +'<td class="cbw"><div class="ck'+(bd.read?' on':'')+'" data-day="'+r.day+'" data-field="read">&#10003;</div></td>'
       +'<td class="cbw"><div class="ck'+(bd.mp?' on':'')+'" data-day="'+r.day+'" data-field="mp">&#10003;</div></td>'
       +'<td class="cbw"><div class="ck'+(bd.ep?' on':'')+'" data-day="'+r.day+'" data-field="ep">&#10003;</div></td>'
-      +'<td><input class="inp bref" data-day="'+r.day+'" style="min-width:115px" placeholder="Key verse..." value="'+esc(bd.ref||'')+'"></td>'
+      +'<td><input class="inp bref" data-day="'+r.day+'" style="min-width:115px;font-size:.76rem" placeholder="Key verse..." value="'+esc(bd.ref||'')+'"></td>'
       +'</tr>';
   }
-  var pgBtns='';
-  for(var i=0;i<total;i++) pgBtns+='<button class="pgb'+(i===BP?' cur':'')+'" onclick="BP='+i+';goto(\'bible\')">'+(i*BPER+1)+'-'+Math.min((i+1)*BPER,365)+'</button>';
-  return hero('Complete Bible in One Year','<span>Bible</span> Reading Plan',
-    '1,189 chapters &bull; 66 books &bull; 3-4 chapters/day &bull; Genesis to Revelation',
-    'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=1200&q=80','','145px')
-  +tb
-  +'<div style="display:flex;gap:8px;padding:0 26px 7px;flex-wrap:wrap;align-items:center">'
-  +'<div style="width:10px;height:10px;background:rgba(245,158,11,.45);border-radius:2px"></div><span style="font-size:.7rem;color:var(--mut)">Old Testament</span>'
-  +'<div style="width:10px;height:10px;background:rgba(59,130,246,.45);border-radius:2px;margin-left:8px"></div><span style="font-size:.7rem;color:var(--mut)">New Testament</span>'
-  +'<div style="width:10px;height:10px;background:rgba(139,92,246,.45);border-radius:2px;margin-left:8px"></div><span style="font-size:.7rem;color:var(--mut)">OT+NT</span>'
-  +'</div>'
-  +'<div class="twrap"><table><thead><tr><th>Day</th><th>Date</th><th>Reading</th><th>Test.</th><th>Books</th><th>Morn &#x2713;</th><th>Eve &#x2713;</th><th>Reflection</th></tr></thead><tbody>'+tr+'</tbody></table></div>'
-  +'<div class="pag"><button class="pgb" onclick="BP=Math.max(0,BP-1);goto(\'bible\')" '+(BP===0?'disabled':'')+'>&#8249;</button>'+pgBtns+'<button class="pgb" onclick="BP=Math.min('+(total-1)+',BP+1);goto(\'bible\')" '+(BP>=total-1?'disabled':'')+'>&#8250;</button>'
-  +'<button class="pgb" onclick="BP=Math.floor(('+(getDayNum()-1)+')/'+BPER+');goto(\'bible\')" style="margin-left:auto;background:var(--gold2);color:#000;border-color:var(--gold)">&#128205; Today</button></div>';
+  return h+'</tbody></table>';
+}
+
+function biblePagBtns(total){
+  var h='<button class="pgb" onclick="BP=Math.max(0,BP-1);goto(\'bible\')" '+(BP===0?'disabled':'')+'>&#8249;</button>';
+  for(var i=0;i<total;i++) h+='<button class="pgb'+(i===BP?' cur':'')+'" onclick="BP='+i+';goto(\'bible\')">'+(i*BPER+1)+'-'+Math.min((i+1)*BPER,365)+'</button>';
+  h+='<button class="pgb" onclick="BP=Math.min('+(total-1)+',BP+1);goto(\'bible\')" '+(BP>=total-1?'disabled':'')+'>&#8250;</button>';
+  h+='<button class="pgb" onclick="BP=Math.floor(('+(getDayNum()-1)+')/'+BPER+');goto(\'bible\')" style="margin-left:auto;background:var(--gold2);color:#000;border-color:var(--gold)">📍 Today</button>';
+  return h;
 }
 
 function wireBible(){
@@ -803,275 +1132,214 @@ function wireBible(){
       if(!DATA.bible[day]) DATA.bible[day]={};
       DATA.bible[day][field]=!DATA.bible[day][field];
       save(); this.classList.toggle('on');
+      // sync to daily tracker
+      if(field==='mp'||field==='ep'||field==='read'){
+        var td=today(); if(!DATA.daily[td]) DATA.daily[td]={};
+        DATA.daily[td]['prayer']=(DATA.bible[day]['mp']||DATA.bible[day]['ep'])||false;
+        DATA.daily[td]['bible']=DATA.bible[day]['read']||false;
+        save();
+      }
     };
   });
   qsa('.bref').forEach(function(e){
-    e.onblur=function(){
-      var day=parseInt(this.dataset.day);
-      if(!DATA.bible[day]) DATA.bible[day]={};
-      DATA.bible[day].ref=this.value; save();
-    };
+    e.onblur=function(){var day=parseInt(this.dataset.day);if(!DATA.bible[day])DATA.bible[day]={};DATA.bible[day].ref=this.value;save();};
   });
 }
 
-// ══════════════════════════════════════════════════════════════════════
-// HEALTHY MIND
-// ══════════════════════════════════════════════════════════════════════
-function pgHM(){
-  var trgs=[
-    {t:'Being alone at home',r:'HIGH',c:'var(--red)',a1:'Go for a walk outside immediately',a2:'Cold water face wash + 20 push-ups',root:'Plan activities for alone time &mdash; never be unoccupied'},
-    {t:'Late night mobile use',r:'HIGH',c:'var(--red)',a1:'Phone on charger in another room by 10 PM',a2:'Read Bible or journal 15 min',root:'Create a screen-free bedtime routine from today'},
-    {t:'Boredom / idle mind',r:'MED',c:'var(--amber)',a1:'Start a productive task immediately',a2:'Call a family member or friend',root:'Fill every hour with purpose &mdash; empty time is dangerous'},
-    {t:'Stress / work pressure',r:'MED',c:'var(--amber)',a1:'10-min walk + deep breathing',a2:'Write in journal + pray',root:'Learn stress management &mdash; stress is a key trigger'},
-    {t:'Social media scrolling',r:'HIGH',c:'var(--red)',a1:'Close app, set a 30-min daily timer',a2:'Do 50 squats or push-ups instead',root:'Remove triggering apps from your phone home screen'},
-    {t:'Night urge before sleep',r:'HIGH',c:'var(--red)',a1:'Pray immediately &mdash; keep light on if needed',a2:'Read one Bible chapter + deep breathing',root:'Sleep by 10:30 PM &mdash; tired body = fewer urges'}
-  ];
-  var tc='';
-  for(var i=0;i<trgs.length;i++){
-    var t=trgs[i],rb=t.r==='HIGH'?'bgr':'bga';
-    tc+='<div class="trc">'
-      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:9px;flex-wrap:wrap">'
-      +'<span style="font-family:Rajdhani;font-weight:700;color:var(--txt);font-size:.88rem">'+t.t+'</span>'
-      +'<span class="bdg '+rb+'">'+t.r+'</span></div>'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">'
-      +'<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:7px;padding:8px;font-size:.74rem;color:var(--mut)">'
-      +'<strong style="display:block;color:var(--txt);margin-bottom:2px;font-family:Rajdhani;font-size:.72rem">&#x26A1; Immediate</strong>'+t.a1+'</div>'
-      +'<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:7px;padding:8px;font-size:.74rem;color:var(--mut)">'
-      +'<strong style="display:block;color:var(--txt);margin-bottom:2px;font-family:Rajdhani;font-size:.72rem">&#x1F504; Backup</strong>'+t.a2+'</div>'
-      +'</div><div style="margin-top:6px;font-size:.71rem;color:var(--mut);padding-top:6px;border-top:1px solid rgba(255,255,255,.05)">'
-      +'<strong style="color:var(--gold)">Root Fix: </strong>'+t.root+'</div></div>';
+// ══════════════════════════════════════════════════════════════════════════
+// SPIRITUAL TRACKER
+// ══════════════════════════════════════════════════════════════════════════
+var SP=0,SPER=20;
+function pgSpiritual(){
+  var total=Math.ceil(365/SPER),td=today(),dn=getDayNum();
+  var rows=BIBLE_PLAN.slice(SP*SPER,(SP+1)*SPER),tr='';
+  for(var i=0;i<rows.length;i++){
+    var r=rows[i],bd=DATA.bible[r.day]||{},isT=(r.date===td);
+    var rc=r.testament==='OT'?'otr':r.testament==='NT'?'ntr':'mtr';
+    var tbdg=r.testament==='OT'?'bg':r.testament==='NT'?'bgb':'bgv';
+    tr+='<tr class="'+rc+(isT?' today-row':'')+'">'
+      +'<td style="color:var(--gold);font-family:\'Cinzel\',serif;font-weight:700;font-size:.8rem">'+r.day+'</td>'
+      +'<td style="white-space:nowrap;font-size:.76rem;color:'+(isT?'var(--gold)':'var(--txt)')+'">'+r.date+'</td>'
+      +'<td style="font-size:.77rem">'+r.reading+'</td>'
+      +'<td><span class="bdg '+tbdg+'">'+r.testament+'</span></td>'
+      +'<td class="cbw"><div class="ck'+(bd.read?' on':'')+'" data-day="'+r.day+'" data-field="read">&#10003;</div></td>'
+      +'<td class="cbw"><div class="ck'+(bd.mp?' on':'')+'" data-day="'+r.day+'" data-field="mp">&#10003;</div></td>'
+      +'<td class="cbw"><div class="ck'+(bd.ep?' on':'')+'" data-day="'+r.day+'" data-field="ep">&#10003;</div></td>'
+      +'<td class="cbw"><div class="ck'+(bd.choir?' on':'')+'" data-day="'+r.day+'" data-field="choir">&#10003;</div></td>'
+      +'<td><input class="inp bref" data-day="'+r.day+'" style="min-width:130px;font-size:.76rem" placeholder="Key verse / reflection..." value="'+esc(bd.ref||'')+'"></td>'
+      +'</tr>';
   }
-  var bens=[
-    {d:'Day 1-7',ph:'Foundation',e:'Urges peak then reduce &mdash; stay strong',ch:'Restlessness, mood swings',c:'var(--red)'},
-    {d:'Day 8-30',ph:'Clarity Begins',e:'More energy, better focus, improved mood',ch:'Occasional strong urges',c:'var(--amber)'},
-    {d:'Day 31-90',ph:'Transformation',e:'Confidence up, better social interaction',ch:'Less frequent urges',c:'var(--blue)'},
-    {d:'Day 91-180',ph:'New Normal',e:'Deep focus, emotional stability, high motivation',ch:'Rare urges',c:'var(--green)'},
-    {d:'Day 181-365',ph:'Mastery Mode',e:'Peak performance, self-respect, discipline mastery',ch:'Almost none',c:'var(--gold)'}
-  ];
-  var bn='';
-  for(var i=0;i<bens.length;i++){
-    var b=bens[i];
-    bn+='<div style="display:flex;gap:12px;padding:11px;background:var(--card);border:1px solid rgba(100,100,200,.2);border-left:3px solid '+b.c+';border-radius:9px;margin-bottom:9px">'
-      +'<div style="min-width:80px;font-family:Cinzel,serif;color:'+b.c+';font-size:.78rem;font-weight:700;padding-top:1px">'+b.d+'</div>'
-      +'<div><div style="font-family:Rajdhani;font-weight:700;color:var(--txt);font-size:.84rem;margin-bottom:2px">'+b.ph+'</div>'
-      +'<div style="font-size:.76rem;color:var(--mut)">'+b.e+'</div>'
-      +'<div style="font-size:.7rem;color:var(--mut);margin-top:2px;font-style:italic">Challenge: '+b.ch+'</div>'
-      +'</div></div>';
-  }
-  return hero('Mental Discipline System','Healthy <span>Mind</span> System',
-    '"Every time you resist, you build the man you want to become."',
-    'https://images.unsplash.com/photo-1545389336-cf090694435e?w=1200&q=80','','145px')
-  +'<div class="sh"><h2>Trigger &rarr; Response Protocol</h2></div>'
-  +'<div style="padding:12px 26px">'+tc+'</div>'
-  +'<div class="sh"><h2>Benefits Timeline</h2></div>'
-  +'<div style="padding:12px 26px">'+bn+'</div>';
+  var pgBtns='';
+  for(var i=0;i<total;i++) pgBtns+='<button class="pgb'+(i===SP?' cur':'')+'" onclick="SP='+i+';goto(\'spiritual\')">'+(i*SPER+1)+'-'+Math.min((i+1)*SPER,365)+'</button>';
+  return hero('Faith Fuels Every Discipline','Spiritual <span>Tracker</span>',
+    '"I can do all things through Christ who strengthens me." — Philippians 4:13',
+    'https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=1400&q=80','','155px')
+  +'<div class="twrap"><table><thead><tr><th>Day</th><th>Date</th><th>Bible Reading</th><th>Test.</th><th>Read ✓</th><th>Morn Prayer ✓</th><th>Eve Prayer ✓</th><th>Choir ✓</th><th>Key Verse / Reflection</th></tr></thead><tbody>'+tr+'</tbody></table></div>'
+  +'<div class="pag"><button class="pgb" onclick="SP=Math.max(0,SP-1);goto(\'spiritual\')" '+(SP===0?'disabled':'')+'>&#8249;</button>'+pgBtns+'<button class="pgb" onclick="SP=Math.min('+(total-1)+',SP+1);goto(\'spiritual\')" '+(SP>=total-1?'disabled':'')+'>&#8250;</button>'
+  +'<button class="pgb" onclick="SP=Math.floor(('+(getDayNum()-1)+')/'+SPER+');goto(\'spiritual\')" style="margin-left:auto;background:var(--gold2);color:#000">📍 Today</button></div>';
 }
 
-// ══════════════════════════════════════════════════════════════════════
-// HAIR RESTORATION
-// ══════════════════════════════════════════════════════════════════════
-function pgHair(){
-  var steps=[
-    {n:1,t:'When to Apply',b:'Every Wednesday &amp; Saturday evening &mdash; before bath. Twice weekly is optimal for genetic DHT management and body heat reduction.'},
-    {n:2,t:'Warm the Oil',b:'Heat groundnut oil to lukewarm (NOT hot). Add 5-6 fresh curry leaves while warming. Lukewarm oil penetrates follicles 3x deeper.'},
-    {n:3,t:'Massage (15-20 min)',b:'Section hair. Apply oil directly to SCALP. Circular fingertip motion &mdash; firm but gentle. Focus EXTRA on back of head (your thinning area). Finish: tap scalp lightly 2 min to stimulate dormant follicles.'},
-    {n:4,t:'Leave Duration',b:'Minimum 2 hours. Best: leave overnight with soft cloth/towel. Body repairs at night &mdash; oil works synergistically.'},
-    {n:5,t:'Wash Off',b:'Use Shikakai powder paste OR Reetha (soapnut) powder. Mix with water to paste, apply 5 min, rinse. NEVER SLS shampoo &mdash; it strips natural oils.'},
-    {n:6,t:'Power Oil Blend',b:'Mix: Groundnut 50% + Coconut 30% + Castor 10% + Bhringraj 10%. Castor = ricinoleic acid (proven regrowth). Bhringraj = Ayurvedic DHT inhibitor.'}
-  ];
-  var os='';
-  for(var i=0;i<steps.length;i++){
-    var s=steps[i];
-    os+='<div class="oils"><div class="oiln">'+s.n+'</div>'
-      +'<div><div style="font-family:Rajdhani;font-weight:700;color:var(--gold);margin-bottom:2px">'+s.t+'</div>'
-      +'<div style="font-size:.76rem;color:var(--mut);line-height:1.58">'+s.b+'</div></div></div>';
-  }
-  var foods=[
-    {e:'&#x1F95C;',n:'Groundnuts Daily',w:'Small handful every day',y:'Biotin + Vit E &mdash; strengthens shaft, reduces breakage'},
-    {e:'&#x1F33F;',n:'Curry Leaves',w:'10 raw leaves every morning',y:'Beta-carotene + Iron &mdash; rebuilds follicles, fights DHT'},
-    {e:'&#x1FAD8;',n:'Sprouted Moong/Chana',w:'Daily at breakfast',y:'Protein + Iron + Zinc &mdash; best plant protein for hair'},
-    {e:'&#x1F330;',n:'Sesame Seeds (Til)',w:'1 tbsp daily in food',y:'Calcium + Iron + Zinc + Omega-6 &mdash; feeds follicles'},
-    {e:'&#x1F343;',n:'Amla (Gooseberry)',w:'2-3 raw daily OR 50ml juice',y:'Highest Vit C &mdash; inhibits DHT enzyme (5-alpha reductase)'},
-    {e:'&#x1F33E;',n:'Fenugreek (Methi)',w:'1 tsp soaked, every morning',y:'Lecithin strengthens hair, nicotinic acid boosts circulation'},
-    {e:'&#x1F96C;',n:'Spinach / Palak',w:'3-4 times per week',y:'Iron + Folate &mdash; iron deficiency is #1 hidden hair loss cause'},
-    {e:'&#x1F9C5;',n:'Onion Juice (applied)',w:'Scalp 2-3x/week, leave 30 min',y:'Sulfur &rarr; collagen in follicles, 74% regrowth in studies'},
-    {e:'&#x1F965;',n:'Tender Coconut Water',w:'Daily if possible',y:'Cytokinins prevent follicle miniaturization from DHT'},
-    {e:'&#x1F4A7;',n:'3 Liters Water',w:'Every single day &#x2705;',y:'Scalp dehydration accelerates hair fall fastest'}
-  ];
-  var fg='';
-  for(var i=0;i<foods.length;i++){
-    var f=foods[i];
-    fg+='<div class="fc"><div style="font-size:1.4rem;margin-bottom:5px">'+f.e+'</div>'
-      +'<div style="font-family:Rajdhani;font-weight:700;color:var(--gold);font-size:.83rem;margin-bottom:2px">'+f.n+'</div>'
-      +'<div style="font-size:.68rem;color:var(--green);margin-bottom:4px">'+f.w+'</div>'
-      +'<div style="font-size:.71rem;color:var(--mut);line-height:1.5">'+f.y+'</div></div>';
-  }
-  var wk=[
-    {d:'MON',a:'Eat: Curry leaves + amla<br>Scalp: Rest day',sp:false},
-    {d:'TUE',a:'Apply: Onion juice 30 min<br>Eat: Sesame seeds',sp:false},
-    {d:'WED',a:'&#x1F95C; OIL BATH #1<br>Warm oil + curry leaves<br>Shikakai wash + Rice water rinse',sp:true},
-    {d:'THU',a:'Eat: Fenugreek seeds<br>Dry scalp massage 5 min',sp:false},
-    {d:'FRI',a:'Eat: Amla + sprouted moong<br>Rest day',sp:false},
-    {d:'SAT',a:'&#x1F95C; OIL BATH #2<br>Oil blend overnight<br>Reetha wash + Rice water rinse',sp:true},
-    {d:'SUN',a:'Scalp rest day<br>Take monthly progress photo<br>Eat all hair foods',sp:false}
-  ];
-  var hw='';
-  for(var i=0;i<wk.length;i++){
-    var w=wk[i];
-    hw+='<div class="hwd'+(w.sp?' sp':'')+'"><div style="font-family:Cinzel,serif;font-size:.73rem;color:var(--gold);margin-bottom:5px">'+w.d+'</div>'
-      +'<div style="font-size:.66rem;color:var(--mut);line-height:1.52">'+w.a+'</div></div>';
-  }
-  return hero('100% Natural &bull; No Chemicals &bull; No Minoxidil','Hair <span>Restoration</span> Plan',
-    'Groundnut oil baths &bull; Natural foods &bull; Ayurvedic approach for genetic hair loss',
-    'https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?w=1200&q=80','','145px')
-  +'<div style="padding:12px 26px 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:9px">'
-  +'<div style="background:var(--card);border:1px solid rgba(239,68,68,.25);border-left:3px solid var(--red);border-radius:0;padding:11px;display:flex;gap:9px"><i class="fas fa-dna" style="color:var(--red);font-size:.9rem;padding-top:2px;flex-shrink:0"></i><div><div style="font-family:Rajdhani;font-weight:700;color:var(--red);margin-bottom:2px">Genetic DHT (Father &amp; Mother side)</div><div style="font-size:.74rem;color:var(--mut)">Manage with oil massage, Bhringraj &amp; amla &mdash; genetics can be significantly slowed naturally</div></div></div>'
-  +'<div style="background:var(--card);border:1px solid rgba(245,158,11,.25);border-left:3px solid var(--amber);border-radius:0;padding:11px;display:flex;gap:9px"><i class="fas fa-fire" style="color:var(--amber);font-size:.9rem;padding-top:2px;flex-shrink:0"></i><div><div style="font-family:Rajdhani;font-weight:700;color:var(--amber);margin-bottom:2px">Excess Body Heat (Your Key Trigger)</div><div style="font-size:.74rem;color:var(--mut)">Groundnut oil bath twice weekly cools scalp heat &mdash; your plan is PERFECT &#x2705;</div></div></div>'
-  +'<div style="background:var(--card);border:1px solid rgba(16,185,129,.25);border-left:3px solid var(--green);border-radius:0;padding:11px;display:flex;gap:9px"><i class="fas fa-leaf" style="color:var(--green);font-size:.9rem;padding-top:2px;flex-shrink:0"></i><div><div style="font-family:Rajdhani;font-weight:700;color:var(--green);margin-bottom:2px">Nutrition &amp; Scalp Circulation</div><div style="font-size:.74rem;color:var(--mut)">Oil massage boosts scalp blood flow 40-50%. Curry leaves + amla = direct follicle nutrition</div></div></div>'
-  +'</div>'
-  +'<div class="sh"><h2>&#x1F95C; Groundnut Oil Bath &mdash; Step by Step</h2><span class="bdg bg">Wed &amp; Sat &bull; Twice Weekly</span></div>'
-  +'<div class="oilw">'+os+'</div>'
-  +'<div class="sh"><h2>Natural Foods for Hair Growth</h2></div>'
-  +'<div class="fgrid">'+fg+'</div>'
-  +'<div class="sh"><h2>Weekly Hair Care Schedule</h2></div>'
-  +'<div class="hwk">'+hw+'</div>';
-}
-
-// ══════════════════════════════════════════════════════════════════════
-// WEEKLY REVIEW
-// ══════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════
+// WEEKLY REVIEW — integrated with all pages
+// ══════════════════════════════════════════════════════════════════════════
 var WKPG=0,WKPER=13;
 function pgWeekly(){
-  var total=Math.ceil(52/WKPER);
-  var weeks=[];
+  var total=Math.ceil(52/WKPER),weeks=[];
   for(var i=0;i<52;i++){
-    var s=new Date(2026,2,20); s.setDate(s.getDate()+i*7);
-    var e=new Date(s); e.setDate(e.getDate()+6);
-    weeks.push({w:i+1,s:s.toLocaleDateString('en-GB',{day:'2-digit',month:'short'}),e:e.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'})});
+    var s=new Date(2026,2,20);s.setDate(s.getDate()+i*7);
+    var e=new Date(s);e.setDate(e.getDate()+6);
+    var wDates=ALL_DATES.slice(i*7,i*7+7);
+    var totalPts=0,maxPts=7*MAX_PTS,bibRead=0,prayers=0;
+    for(var j=0;j<wDates.length;j++){
+      totalPts+=tscore(wDates[j]);
+      var dayNum=i*7+j+1;
+      var bd=DATA.bible[dayNum]||{};
+      if(bd.read) bibRead++;
+      if(bd.mp||bd.ep) prayers++;
+    }
+    var scorePct=Math.round(totalPts/maxPts*100);
+    // weight for the week
+    var wt='';
+    for(var j=6;j>=0;j--){var wdat=wDates[j];if(DATA.weight[wdat]){wt=DATA.weight[wdat];break;}}
+    weeks.push({w:i+1,s:s.toLocaleDateString('en-GB',{day:'2-digit',month:'short'}),
+      e:e.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}),
+      totalPts:totalPts,maxPts:maxPts,scorePct:scorePct,bibRead:bibRead,prayers:prayers,wt:wt});
   }
-  var slice=weeks.slice(WKPG*WKPER,(WKPG+1)*WKPER);
-  var tr='';
+  var slice=weeks.slice(WKPG*WKPER,(WKPG+1)*WKPER),tr='';
   for(var i=0;i<slice.length;i++){
     var r=slice[i],d=DATA.weekly[r.w]||{};
-    var sc=parseFloat(d.score)||0;
-    var scC=sc>=8?'var(--green)':sc>=5?'var(--amber)':'var(--red)';
-    tr+='<tr><td style="font-family:Cinzel,serif;color:var(--gold);font-weight:700">W'+r.w+'</td>'
-      +'<td style="font-size:.74rem;white-space:nowrap">'+r.s+' &ndash; '+r.e+'</td>'
-      +'<td><input class="inp wksc" data-wk="'+r.w+'" type="number" min="0" max="10" step="0.5" style="width:55px;text-align:center;color:'+scC+'" placeholder="&mdash;" value="'+esc(d.score||'')+'"></td>'
-      +'<td><input class="inp wkwt" data-wk="'+r.w+'" style="width:80px" placeholder="e.g. -1.2kg" value="'+esc(d.wt||'')+'"></td>'
-      +'<td><input class="inp wkwin" data-wk="'+r.w+'" style="min-width:100px" placeholder="Win..." value="'+esc(d.win||'')+'"></td>'
-      +'<td><input class="inp wkfail" data-wk="'+r.w+'" style="min-width:100px" placeholder="Fail..." value="'+esc(d.fail||'')+'"></td>'
-      +'<td><input class="inp wkfix" data-wk="'+r.w+'" style="min-width:110px" placeholder="Fix..." value="'+esc(d.fix||'')+'"></td>'
+    var sc=r.scorePct;
+    var scC=sc>=80?'var(--green)':sc>=50?'var(--amber)':'var(--red)';
+    tr+='<tr>'
+      +'<td style="font-family:\'Cinzel\',serif;color:var(--gold);font-weight:700">W'+r.w+'</td>'
+      +'<td style="font-size:.76rem;white-space:nowrap;color:var(--txt2)">'+r.s+' – '+r.e+'</td>'
+      +'<td><div style="font-family:\'Cinzel\',serif;color:'+scC+';font-weight:700;font-size:.85rem">'+r.totalPts+'/'+r.maxPts+'</div><div style="height:4px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;margin-top:3px"><div style="width:'+sc+'%;height:100%;background:'+scC+'"></div></div></td>'
+      +'<td style="text-align:center"><span style="font-size:.82rem;color:'+(r.bibRead>=7?'var(--green)':'var(--txt2)')+'">'+r.bibRead+'/7</span></td>'
+      +'<td style="text-align:center"><span style="font-size:.82rem;color:'+(r.prayers>=7?'var(--green)':'var(--txt2)')+'">'+r.prayers+'/7</span></td>'
+      +'<td style="color:var(--blue);font-weight:700;font-size:.82rem">'+(r.wt||'—')+' kg</td>'
+      +'<td><input class="inp wkwin" data-wk="'+r.w+'" style="min-width:100px;font-size:.76rem" placeholder="This week\'s win..." value="'+esc(d.win||'')+'"></td>'
+      +'<td><input class="inp wkfail" data-wk="'+r.w+'" style="min-width:100px;font-size:.76rem" placeholder="What to fix..." value="'+esc(d.fail||'')+'"></td>'
       +'</tr>';
   }
   var pgBtns='';
   for(var i=0;i<total;i++) pgBtns+='<button class="pgb'+(i===WKPG?' cur':'')+'" onclick="WKPG='+i+';goto(\'weekly\')">'+(i*WKPER+1)+'-'+Math.min((i+1)*WKPER,52)+'</button>';
-  return hero('Every Sunday','Weekly <span>Review</span>','',
-    'https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=1200&q=80','','135px')
-  +'<div class="twrap"><table><thead><tr><th>Week</th><th>Dates</th><th>Score /10</th><th>Wt Change</th><th>Key Win</th><th>Key Fail</th><th>Fix Next Week</th></tr></thead><tbody>'+tr+'</tbody></table></div>'
+  return hero('Weekly Progress Review','Weekly <span>Review</span>',
+    'Scores pulled automatically from Daily Tracker, Bible & Weight data',
+    'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80','','148px')
+  +'<div class="ib ib-green" style="margin:12px 24px"><div style="font-size:.84rem"><i class="fas fa-circle-info" style="color:var(--green);margin-right:6px"></i><strong>Auto-integrated:</strong> Score, Bible reading count, Prayer count, and Weight are all pulled automatically from your logged data. Only add your personal Win and Fix notes.</div></div>'
+  +'<div class="twrap"><table><thead><tr><th>Week</th><th>Dates</th><th>Score (Auto)</th><th>Bible</th><th>Prayer</th><th>Weight</th><th>Key Win</th><th>Fix Next Week</th></tr></thead><tbody>'+tr+'</tbody></table></div>'
   +'<div class="pag"><button class="pgb" onclick="WKPG=Math.max(0,WKPG-1);goto(\'weekly\')" '+(WKPG===0?'disabled':'')+'>&#8249; Prev</button>'+pgBtns+'<button class="pgb" onclick="WKPG=Math.min('+(total-1)+',WKPG+1);goto(\'weekly\')" '+(WKPG>=total-1?'disabled':'')+'>Next &#8250;</button></div>';
 }
 
 function wireWk(){
   function wi(sel,f){qsa(sel).forEach(function(e){e.onblur=function(){var w=parseInt(this.dataset.wk);if(!DATA.weekly[w])DATA.weekly[w]={};DATA.weekly[w][f]=this.value;save();};});}
-  wi('.wksc','score');wi('.wkwt','wt');wi('.wkwin','win');wi('.wkfail','fail');wi('.wkfix','fix');
+  wi('.wkwin','win');wi('.wkfail','fail');
 }
 
-// ══════════════════════════════════════════════════════════════════════
-// SPIRITUAL TRACKER
-// ══════════════════════════════════════════════════════════════════════
-var SP=0,SPER=20;
-function pgSpiritual(){
-  var total=Math.ceil(365/SPER),td=today();
-  var rows=BIBLE_PLAN.slice(SP*SPER,(SP+1)*SPER);
-  var tr='';
-  for(var i=0;i<rows.length;i++){
-    var r=rows[i],bd=DATA.bible[r.day]||{},isT=(r.date===td);
-    var rc=r.testament==='OT'?'otr':r.testament==='NT'?'ntr':'mtr';
-    var tbdg=r.testament==='OT'?'bg':r.testament==='NT'?'bgb':'bgv';
-    tr+='<tr class="'+rc+'" style="'+(isT?'background:rgba(245,166,35,.05)':'')+'">'
-      +'<td style="color:var(--gold);font-family:Cinzel,serif;font-weight:700;font-size:.78rem">'+r.day+'</td>'
-      +'<td style="white-space:nowrap;font-size:.73rem;color:'+(isT?'var(--gold)':'var(--txt)')+'">'+r.date+'</td>'
-      +'<td style="font-size:.74rem">'+r.reading+'</td>'
-      +'<td><span class="bdg '+tbdg+'">'+r.testament+'</span></td>'
-      +'<td class="cbw"><div class="ck'+(bd.mp?' on':'')+'" data-day="'+r.day+'" data-field="mp">&#10003;</div></td>'
-      +'<td class="cbw"><div class="ck'+(bd.ep?' on':'')+'" data-day="'+r.day+'" data-field="ep">&#10003;</div></td>'
-      +'<td class="cbw"><div class="ck'+(bd.choir?' on':'')+'" data-day="'+r.day+'" data-field="choir">&#10003;</div></td>'
-      +'<td><input class="inp bref" data-day="'+r.day+'" style="min-width:135px" placeholder="Today&#x27;s verse..." value="'+esc(bd.ref||'')+'"></td>'
-      +'</tr>';
-  }
-  var pgBtns='';
-  for(var i=0;i<total;i++) pgBtns+='<button class="pgb'+(i===SP?' cur':'')+'" onclick="SP='+i+';goto(\'spiritual\')">'+(i*SPER+1)+'-'+Math.min((i+1)*SPER,365)+'</button>';
-  return hero('Faith Fuels Discipline','Spiritual <span>Tracker</span>',
-    '"I can do all things through Christ who strengthens me." &mdash; Philippians 4:13',
-    'https://images.unsplash.com/photo-1518021964703-4b2030f03085?w=1200&q=80','','145px')
-  +'<div class="twrap"><table><thead><tr><th>Day</th><th>Date</th><th>Bible Reading</th><th>Test.</th><th>Morn Prayer &#x2713;</th><th>Eve Prayer &#x2713;</th><th>Choir &#x2713;</th><th>Key Verse</th></tr></thead><tbody>'+tr+'</tbody></table></div>'
-  +'<div class="pag"><button class="pgb" onclick="SP=Math.max(0,SP-1);goto(\'spiritual\')" '+(SP===0?'disabled':'')+'>&#8249;</button>'+pgBtns+'<button class="pgb" onclick="SP=Math.min('+(total-1)+',SP+1);goto(\'spiritual\')" '+(SP>=total-1?'disabled':'')+'>&#8250;</button>'
-  +'<button class="pgb" onclick="SP=Math.floor(('+(getDayNum()-1)+')/'+SPER+');goto(\'spiritual\')" style="margin-left:auto;background:var(--gold2);color:#000;border-color:var(--gold)">&#128205; Today</button></div>';
-}
-
-// ══════════════════════════════════════════════════════════════════════
-// MOTIVATION BOARD
-// ══════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════
+// MOTIVATION BOARD — large fonts, real HD images
+// ══════════════════════════════════════════════════════════════════════════
 function pgMotivation(){
   var whys=[
-    '&#x1F4BC; Become a QA Automation Engineer and switch to a high-paying job',
-    '&#x2696;&#xFE0F; Lose 20 kg and become physically fit and healthy for life',
-    '&#x1F393; Complete MCA degree with strong academic credentials',
-    '&#x1F4AA; Build unbreakable mental strength through daily discipline',
-    '&#x1F4D6; Honor God with daily Bible reading and consistent prayer',
-    '&#x1F468;&#x200D;&#x1F469;&#x200D;&#x1F467; Be a role model my future family can be proud of',
-    '&#x1F525; Break free from laziness, distraction, and mediocrity FOREVER',
-    '&#x1F3C6; I am doing this for MYSELF &mdash; my identity is discipline'
+    {e:'💼',t:'Become a QA Automation Engineer',d:'Get a high-paying job in automation testing. Leave behind manual QA limitations. Build a career you are proud of.'},
+    {e:'⚖️',t:'Lose 20 KG and Get Fit',d:'From 86 kg to 66 kg. Get your body back. Look good, feel good, live long. For yourself and your future family.'},
+    {e:'🎓',t:'Complete Your MCA Degree',d:'Be the first person in your circle with a master\'s degree in Computer Applications. Academic credentials open doors.'},
+    {e:'💪',t:'Build Unbreakable Mental Strength',d:'Every day of discipline is a vote for the man you want to become. A disciplined mind is the most powerful asset you can own.'},
+    {e:'📖',t:'Honor God Every Single Day',d:'Daily Bible reading and prayer is not just a habit — it is an acknowledgment that your strength comes from above.'},
+    {e:'👨‍👩‍👧',t:'Be a Role Model for Your Family',d:'The version of you that wins this 365-day battle becomes someone your future family can look up to and be proud of.'},
+    {e:'🔥',t:'Break Free from Mediocrity Forever',d:'No more laziness. No more distraction. No more "starting tomorrow." Today is Day 1 again, and you choose discipline.'},
+    {e:'🏆',t:'This is For YOU — Nobody Else',d:'You are not doing this for anyone\'s approval. You are doing this because YOU deserve the best version of yourself.'},
   ];
   var wh='';
-  for(var i=0;i<whys.length;i++) wh+='<div style="background:var(--card);border:1px solid rgba(245,166,35,.2);border-left:3px solid var(--gold);border-radius:0;padding:11px 13px;font-family:Rajdhani;font-weight:700;font-size:.84rem;color:var(--txt)">'+whys[i]+'</div>';
+  for(var i=0;i<whys.length;i++){
+    var w=whys[i];
+    wh+='<div style="background:var(--card);border:1px solid rgba(245,166,35,.18);border-radius:var(--r);padding:16px;display:flex;gap:13px;align-items:flex-start;transition:transform .2s,box-shadow .2s" onmouseover="this.style.transform=\'translateY(-3px)\';this.style.boxShadow=\'0 8px 24px rgba(0,0,0,.4)\'" onmouseout="this.style.transform=\'\';this.style.boxShadow=\'\'">'
+      +'<div style="font-size:2rem;line-height:1;flex-shrink:0">'+w.e+'</div>'
+      +'<div><div style="font-family:\'Cinzel\',serif;font-size:1rem;color:var(--gold);margin-bottom:5px;font-weight:700">'+w.t+'</div>'
+      +'<div style="font-size:.85rem;color:var(--txt2);line-height:1.7">'+w.d+'</div></div></div>';
+  }
   var quotes=[
-    ['Discipline is choosing between what you want now and what you want most.','Abraham Lincoln'],
-    ['The secret of your future is hidden in your daily routine.','Mike Murdock'],
-    ['Success is nothing more than a few simple disciplines practiced every day.','Jim Rohn'],
-    ['It does not matter how slowly you go as long as you do not stop.','Confucius'],
-    ['Your body can stand almost anything. It&#x27;s your mind that you have to convince.','Unknown'],
-    ['The only person you are destined to become is the person you decide to be.','Ralph Waldo Emerson'],
-    ['Wake up with determination. Go to bed with satisfaction.','Unknown'],
-    ['What you do today can improve all your tomorrows.','Ralph Marston'],
-    ['I can do all things through Christ who strengthens me.','Philippians 4:13'],
-    ['Champions are made from something deep inside them &mdash; a desire, a dream, a vision.','Muhammad Ali']
+    {q:"Discipline is choosing between what you want now and what you want most.",a:"Abraham Lincoln",img:'https://images.unsplash.com/photo-1552196563-55cd4e45efb3?w=500&q=80'},
+    {q:"The secret of your future is hidden in your daily routine.",a:"Mike Murdock",img:'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=500&q=80'},
+    {q:"Success is nothing more than a few simple disciplines practiced every day.",a:"Jim Rohn",img:'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=500&q=80'},
+    {q:"It does not matter how slowly you go as long as you do not stop.",a:"Confucius",img:'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=500&q=80'},
+    {q:"Your body can stand almost anything. It is your mind that you have to convince.",a:"Unknown",img:'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500&q=80'},
+    {q:"The only person you are destined to become is the person you decide to be.",a:"Ralph Waldo Emerson",img:'https://images.unsplash.com/photo-1499048071854-47a91eef9a33?w=500&q=80'},
+    {q:"Wake up with determination. Go to bed with satisfaction.",a:"Unknown",img:'https://images.unsplash.com/photo-1501139083538-0139583c060f?w=500&q=80'},
+    {q:"I can do all things through Christ who strengthens me.",a:"Philippians 4:13",img:'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=500&q=80'},
+    {q:"Champions are made from something deep inside them — a desire, a dream, a vision.",a:"Muhammad Ali",img:'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=500&q=80'},
+    {q:"What you do today can improve all your tomorrows.",a:"Ralph Marston",img:'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=500&q=80'},
   ];
   var qc='';
   for(var i=0;i<quotes.length;i++){
     var q=quotes[i];
-    qc+='<div class="qc"><div style="font-size:.88rem;line-height:1.7;color:var(--txt);font-style:italic;position:relative;z-index:1">'+q[0]+'</div>'
-      +'<div style="margin-top:9px;font-family:Rajdhani;font-size:.74rem;color:var(--gold);letter-spacing:1px">&mdash; '+q[1]+'</div></div>';
+    qc+='<div class="qc"><img src="'+q.img+'" alt="" loading="lazy">'
+      +'<div class="qc-body">'
+      +'<div style="font-size:1rem;line-height:1.78;color:var(--txt);font-style:italic;position:relative;z-index:1;margin-bottom:10px">'+q.q+'</div>'
+      +'<div style="font-family:\'Cinzel\',serif;font-size:.82rem;color:var(--gold);letter-spacing:1px">— '+q.a+'</div>'
+      +'</div></div>';
   }
-  return hero('Read This Every Morning','Your <span>WHY</span>','',
-    'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=1400&q=80','','195px')
-  +'<div style="padding:14px 26px"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:9px">'+wh+'</div></div>'
+  return hero('Read This Every Morning Without Fail','Your <span>WHY</span>','',
+    'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=1400&q=80','','220px')
+  +'<div style="padding:16px 24px"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">'+wh+'</div></div>'
   +'<div class="divg"></div>'
-  +'<div class="sh"><h2>Power Quotes</h2></div>'
-  +'<div class="qgrid">'+qc+'</div><div style="height:18px"></div>';
+  +'<div class="sh"><h2 style="font-size:1.2rem">Power Quotes for Daily Strength</h2></div>'
+  +'<div class="qgrid">'+qc+'</div><div style="height:20px"></div>';
 }
 
-// ══════════════════════════════════════════════════════════════════════
-// INIT - runs immediately, no DOMContentLoaded needed
-// ══════════════════════════════════════════════════════════════════════
-(function init(){
-  // Particles
-  var c=document.getElementById('ptcl');
-  if(c){
-    for(var i=0;i<12;i++){
-      var p=document.createElement('div');
-      p.className='pt';
-      var sz=Math.random()*3+1.5;
-      p.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+Math.random()*100+'%;'
-        +'background:hsl('+(32+Math.random()*26)+','+(50+Math.random()*25)+'%,'+(44+Math.random()*18)+'%);'
-        +'animation-duration:'+(11+Math.random()*13)+'s;animation-delay:'+(Math.random()*13)+'s';
-      c.appendChild(p);
-    }
-  }
-  // Start app — direct call, no event listener needed
+// ══════════════════════════════════════════════════════════════════════════
+// MUSIC PLAYER — Web Audio API ambient meditation tones
+// ══════════════════════════════════════════════════════════════════════════
+var audioCtx=null,musicPlaying=false,gainNode=null,oscillators=[];
+var TRACKS=[
+  {name:'Healing Solfeggio 528 Hz',freq:[528,264,132]},
+  {name:'Deep Meditation 432 Hz',freq:[432,216,108]},
+  {name:'Morning Energy 396 Hz',freq:[396,198,99]},
+  {name:'Sleep & Peace 174 Hz',freq:[174,87,348]},
+];
+var curTrack=0;
+function initAudio(){
+  if(audioCtx) return;
+  audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  gainNode=audioCtx.createGain();gainNode.gain.value=0.08;
+  gainNode.connect(audioCtx.destination);
+}
+function startMusic(){
+  initAudio(); if(audioCtx.state==='suspended') audioCtx.resume();
+  stopOscs();
+  var tk=TRACKS[curTrack];
+  tk.freq.forEach(function(f,i){
+    var o=audioCtx.createOscillator();
+    var g=audioCtx.createGain();
+    o.frequency.value=f; o.type=i===0?'sine':'triangle';
+    g.gain.value=i===0?1:0.3-i*0.08;
+    o.connect(g); g.connect(gainNode); o.start();
+    oscillators.push({o:o,g:g});
+  });
+  musicPlaying=true; updateMusicUI();
+}
+function stopOscs(){oscillators.forEach(function(x){try{x.o.stop();}catch(e){}});oscillators=[];}
+function stopMusic(){stopOscs();musicPlaying=false;updateMusicUI();}
+function toggleMusic(){if(musicPlaying){stopMusic();}else{startMusic();}}
+function nextTrack(){stopOscs();curTrack=(curTrack+1)%TRACKS.length;if(musicPlaying){startMusic();}updateMusicUI();}
+function setVolume(v){if(gainNode){gainNode.gain.value=v/100*0.15;}}
+function updateMusicUI(){
+  var btn=el('music-play'); if(!btn) return;
+  btn.innerHTML=musicPlaying?'<i class="fas fa-pause"></i>':'<i class="fas fa-play"></i>';
+  var lbl=el('music-label'); if(lbl) lbl.innerHTML=(musicPlaying?'<span class="note-anim">♫</span> ':'♪ ')+TRACKS[curTrack].name;
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════════════
+(function(){
+  // particles
+  var c=el('ptcl');
+  if(c){for(var i=0;i<14;i++){var p=document.createElement('div');p.className='pt';var sz=Math.random()*3+1.5;p.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+Math.random()*100+'%;background:hsl('+(32+Math.random()*28)+','+(48+Math.random()*24)+'%,'+(42+Math.random()*18)+'%);animation-duration:'+(11+Math.random()*14)+'s;animation-delay:'+(Math.random()*14)+'s';c.appendChild(p);}}
+  // start
   goto('dashboard');
 })();
+
 </script>
 </body>
 </html>
